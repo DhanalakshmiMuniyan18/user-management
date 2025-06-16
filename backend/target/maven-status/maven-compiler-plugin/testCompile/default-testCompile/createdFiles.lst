@@ -1,0 +1,15 @@
+com/usermanagement/patterns/observer/event/ObserverPatternTest.class
+com/usermanagement/api/controller/UserProfileControllerTest.class
+com/usermanagement/api/controller/AuthControllerTest.class
+com/usermanagement/api/service/AuthServiceTest.class
+com/usermanagement/api/controller/UserControllerTest.class
+com/usermanagement/api/model/PermissionTest.class
+com/usermanagement/api/service/UserProfileServiceTest.class
+com/usermanagement/patterns/strategy/payment/PaymentStrategyTest.class
+com/usermanagement/api/model/UserTest.class
+com/usermanagement/patterns/factory/db/DatabaseConnectionFactoryTest.class
+com/usermanagement/api/security/JwtTokenProviderTest.class
+com/usermanagement/api/service/impl/EmailServiceImplTest.class
+com/usermanagement/api/controller/RoleControllerTest.class
+com/usermanagement/api/service/impl/RoleServiceImplTest.class
+com/usermanagement/api/model/RoleTest.class

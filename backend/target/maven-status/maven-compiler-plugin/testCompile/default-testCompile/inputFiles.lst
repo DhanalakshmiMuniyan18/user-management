@@ -1,0 +1,15 @@
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/controller/AuthControllerTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/service/UserProfileServiceTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/controller/UserProfileControllerTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/service/AuthServiceTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/service/impl/EmailServiceImplTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/model/RoleTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/model/PermissionTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/patterns/observer/event/ObserverPatternTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/controller/UserControllerTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/patterns/factory/db/DatabaseConnectionFactoryTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/controller/RoleControllerTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/model/UserTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/service/impl/RoleServiceImplTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/patterns/strategy/payment/PaymentStrategyTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/backend/src/test/java/com/usermanagement/api/security/JwtTokenProviderTest.java
