@@ -4,6 +4,7 @@ com/usermanagement/security/UserSecurity.class
 com/usermanagement/payment/context/PaymentContext.class
 com/usermanagement/service/AccessRequestService.class
 com/usermanagement/service/impl/PermissionServiceImpl.class
+com/usermanagement/dto/StandardResponse.class
 com/usermanagement/observer/core/Event.class
 com/usermanagement/observer/impl/AnalyticsObserver.class
 com/usermanagement/controller/AccessRequestController.class
@@ -29,6 +30,7 @@ com/usermanagement/observer/core/Subject.class
 com/usermanagement/observer/metrics/ObserverMetrics.class
 com/usermanagement/repository/UserRepository.class
 com/usermanagement/controller/PermissionController.class
+com/usermanagement/exception/GlobalExceptionHandler.class
 com/usermanagement/security/JwtUtil.class
 com/usermanagement/mapper/PermissionMapper.class
 com/usermanagement/controller/AuthController.class

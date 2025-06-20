@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
 
-    @Mapping(target = "permissionNames", source = "permissions", qualifiedByName = "permissionsToNames")
+    @Mapping(target = "permissions", source = "permissions", qualifiedByName = "permissionsToNames")
     RoleDto toDto(Role role);
 
     @Mapping(target = "permissions", ignore = true)

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -33,9 +34,7 @@ class RoleControllerTest {
 
     @BeforeEach
     void setUp() {
-        roleDto = new RoleDto();
-        roleDto.setId(1L);
-        roleDto.setName("ADMIN");
+        roleDto = new RoleDto(1L, "ADMIN", null, Set.of());
     }
 
     @Test
@@ -43,6 +42,6 @@ class RoleControllerTest {
         Page<RoleDto> page = new PageImpl<>(List.of(roleDto));
         when(roleService.getAllRoles(any(), any())).thenReturn(page);
         var response = roleController.getAllRoles(null, PageRequest.of(0, 10));
-        assertThat(response.getBody().getContent()).containsExactly(roleDto);
+        assertThat(response.getBody().data().getContent()).containsExactly(roleDto);
     }
 } 
