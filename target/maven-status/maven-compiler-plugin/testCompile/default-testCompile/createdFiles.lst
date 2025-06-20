@@ -1,0 +1,17 @@
+com/usermanagement/controller/AuditLogControllerTest.class
+com/usermanagement/controller/AuthControllerTest.class
+com/usermanagement/repository/UserRepositoryTest.class
+com/usermanagement/controller/PermissionControllerTest.class
+com/usermanagement/audit/AuditLoggingAspectTest.class
+com/usermanagement/repository/AuditLogRepositoryTest.class
+com/usermanagement/config/TestConfig.class
+com/usermanagement/repository/RoleRepositoryTest.class
+com/usermanagement/controller/RoleControllerTest.class
+com/usermanagement/integration/IntegrationTestConfig.class
+com/usermanagement/repository/PermissionRepositoryTest.class
+com/usermanagement/integration/IntegrationTestConfig$TestAuditingConfig.class
+com/usermanagement/service/UserServiceTest.class
+com/usermanagement/repository/AccessRequestRepositoryTest.class
+com/usermanagement/integration/AuditLoggingAspectIntegrationTest.class
+com/usermanagement/integration/AuthIntegrationTest.class
+com/usermanagement/controller/AccessRequestControllerTest.class
