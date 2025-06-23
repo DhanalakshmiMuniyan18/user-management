@@ -47,8 +47,8 @@ public class RBACSecurityAspect {
     @Around(&quot;@annotation(requirePermission)&quot;)
     public Object checkPermission(ProceedingJoinPoint joinPoint, RequirePermission requirePermission) throws Throwable {
         // Validate input parameters
-<span class="pc bpc" id="L50" title="2 of 4 branches missed.">        if (requirePermission == null || requirePermission.value() == null) {</span>
-<span class="nc" id="L51">            throw new IllegalArgumentException(&quot;RequirePermission annotation cannot be null and must have value&quot;);</span>
+<span class="fc bfc" id="L50" title="All 4 branches covered.">        if (requirePermission == null || requirePermission.value() == null) {</span>
+<span class="fc" id="L51">            throw new IllegalArgumentException(&quot;RequirePermission annotation cannot be null and must have value&quot;);</span>
         }
 
         // Get and validate authentication
@@ -95,9 +95,9 @@ public class RBACSecurityAspect {
 <span class="fc" id="L95">        Set&lt;Long&gt; roleIds = authentication.getAuthorities().stream()</span>
 <span class="fc" id="L96">                .map(authority -&gt; {</span>
 <span class="fc" id="L97">                    String roleId = authority.getAuthority();</span>
-<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                    if (!roleId.startsWith(ROLE_PREFIX)) {</span>
-<span class="nc" id="L99">                        log.warn(&quot;Invalid role format: {}&quot;, roleId);</span>
-<span class="nc" id="L100">                        return null;</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">                    if (!roleId.startsWith(ROLE_PREFIX)) {</span>
+<span class="fc" id="L99">                        log.warn(&quot;Invalid role format: {}&quot;, roleId);</span>
+<span class="fc" id="L100">                        return null;</span>
                     }
                     try {
 <span class="fc" id="L103">                        return Long.parseLong(roleId.substring(ROLE_PREFIX.length()));</span>
@@ -117,8 +117,8 @@ public class RBACSecurityAspect {
     }
 
     private void validateRoleIds(Set&lt;Long&gt; roleIds, String username) {
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (roleIds.size() &gt; MAX_ROLES_PER_USER) {</span>
-<span class="nc" id="L121">            throw new SecurityException(&quot;User &quot; + username + &quot; exceeds maximum allowed roles: &quot; + MAX_ROLES_PER_USER);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (roleIds.size() &gt; MAX_ROLES_PER_USER) {</span>
+<span class="fc" id="L121">            throw new SecurityException(&quot;User &quot; + username + &quot; exceeds maximum allowed roles: &quot; + MAX_ROLES_PER_USER);</span>
         }
 <span class="fc" id="L123">    }</span>
 
@@ -131,7 +131,7 @@ public class RBACSecurityAspect {
 
         // Validate each role has permissions
 <span class="fc" id="L133">        userRoles.forEach(role -&gt; {</span>
-<span class="pc bpc" id="L134" title="1 of 4 branches missed.">            if (role.getPermissions() == null || role.getPermissions().isEmpty()) {</span>
+<span class="fc bfc" id="L134" title="All 4 branches covered.">            if (role.getPermissions() == null || role.getPermissions().isEmpty()) {</span>
 <span class="fc" id="L135">                log.warn(&quot;Role {} has no permissions&quot;, role.getName());</span>
             }
 <span class="fc" id="L137">        });</span>
@@ -141,7 +141,7 @@ public class RBACSecurityAspect {
 
     private Set&lt;String&gt; extractPermissions(Set&lt;Role&gt; userRoles) {
 <span class="fc" id="L143">        return userRoles.stream()</span>
-<span class="pc bpc" id="L144" title="1 of 2 branches missed.">                .filter(role -&gt; role.getPermissions() != null)</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">                .filter(role -&gt; role.getPermissions() != null)</span>
 <span class="fc" id="L145">                .flatMap(role -&gt; role.getPermissions().stream())</span>
 <span class="fc" id="L146">                .filter(permission -&gt; StringUtils.hasText(permission.getName()))</span>
 <span class="fc" id="L147">                .map(Permission::getName)</span>
@@ -158,8 +158,8 @@ public class RBACSecurityAspect {
         // Validate each required permission
 <span class="fc" id="L159">        Arrays.stream(requiredPermissions)</span>
 <span class="fc" id="L160">                .forEach(permission -&gt; {</span>
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                    if (!StringUtils.hasText(permission)) {</span>
-<span class="nc" id="L162">                        throw new IllegalArgumentException(&quot;Required permission cannot be null or empty&quot;);</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">                    if (!StringUtils.hasText(permission)) {</span>
+<span class="fc" id="L162">                        throw new IllegalArgumentException(&quot;Required permission cannot be null or empty&quot;);</span>
                     }
 <span class="fc" id="L164">                });</span>
 

@@ -499,4 +499,154 @@ public class RBACSecurityAspectTest {
         assertEquals("Anonymous users are not allowed to access secured methods", exception.getMessage());
         verify(joinPoint, never()).proceed();
     }
+
+    @Test
+    void checkPermission_AuthorityWithInvalidPrefix_ThrowsException() throws Throwable {
+        // Authority does not start with ROLE_
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("USER_1"));
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("No valid roles found", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_AuthorityWithNonNumericRoleId_ThrowsException() throws Throwable {
+        // Authority is ROLE_abc
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_abc"));
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("No valid roles found", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_NoValidRolesAfterFiltering_ThrowsException() throws Throwable {
+        // All authorities are invalid
+        Collection<SimpleGrantedAuthority> authorities = Arrays.asList(
+            new SimpleGrantedAuthority("USER_1"),
+            new SimpleGrantedAuthority("ROLE_abc")
+        );
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("No valid roles found", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_TooManyRoles_ThrowsException() throws Throwable {
+        // User has more than MAX_ROLES_PER_USER authorities
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (int i = 0; i < 101; i++) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + i));
+        }
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        Set<Long> roleIds = new HashSet<>();
+        for (int i = 0; i < 101; i++) {
+            roleIds.add((long) i);
+        }
+        when(roleRepository.findByIdInWithPermissions(roleIds)).thenReturn(Collections.emptySet());
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertTrue(exception.getMessage().contains("exceeds maximum allowed roles"));
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_RoleWithNullPermissions_ThrowsException() throws Throwable {
+        // Role with null permissions
+        Role role = new Role();
+        role.setId(roleId);
+        role.setName("TEST_ROLE");
+        role.setPermissions(null);
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleId));
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        when(roleRepository.findByIdInWithPermissions(Collections.singleton(roleId)))
+                .thenReturn(Collections.singleton(role));
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("User " + testUsername + " does not have the required permissions: TEST_PERMISSION", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_PermissionWithNullOrBlankName_ThrowsException() throws Throwable {
+        // Permission with null name
+        Role role = new Role();
+        role.setId(roleId);
+        role.setName("TEST_ROLE");
+        role.setPermissions(new HashSet<>());
+        Permission permission = new Permission();
+        permission.setId(1L);
+        permission.setName(null);
+        permission.setRoles(new HashSet<>());
+        role.getPermissions().add(permission);
+        permission.getRoles().add(role);
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleId));
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        when(roleRepository.findByIdInWithPermissions(Collections.singleton(roleId)))
+                .thenReturn(Collections.singleton(role));
+        SecurityException exception = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("User " + testUsername + " does not have the required permissions: TEST_PERMISSION", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+
+        // Permission with blank name
+        permission.setName("");
+        SecurityException exception2 = assertThrows(SecurityException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, requirePermission));
+        assertEquals("User " + testUsername + " does not have the required permissions: TEST_PERMISSION", exception2.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_RequirePermissionAnnotationIsNull_ThrowsException() throws Throwable {
+        // Pass null annotation
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, null));
+        assertEquals("RequirePermission annotation cannot be null and must have value", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_RequirePermissionValueIsNull_ThrowsException() throws Throwable {
+        // Annotation value() returns null
+        RequirePermission nullValuePermission = mock(RequirePermission.class, withSettings().lenient());
+        when(nullValuePermission.value()).thenReturn(null);
+        when(nullValuePermission.allRequired()).thenReturn(true);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, nullValuePermission));
+        assertEquals("RequirePermission annotation cannot be null and must have value", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
+
+    @Test
+    void checkPermission_RequirePermissionValueContainsNullOrBlank_ThrowsException() throws Throwable {
+        // Annotation value() contains null or blank
+        RequirePermission badValuePermission = mock(RequirePermission.class, withSettings().lenient());
+        when(badValuePermission.value()).thenReturn(new String[]{null, " ", "PERMISSION_1"});
+        when(badValuePermission.allRequired()).thenReturn(true);
+        // Setup role with permission
+        Role role = new Role();
+        role.setId(roleId);
+        role.setName("TEST_ROLE");
+        role.setPermissions(new HashSet<>());
+        Permission permission = new Permission();
+        permission.setId(1L);
+        permission.setName("PERMISSION_1");
+        permission.setRoles(new HashSet<>());
+        role.getPermissions().add(permission);
+        permission.getRoles().add(role);
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleId));
+        when(authentication.getAuthorities()).thenReturn((Collection) authorities);
+        when(roleRepository.findByIdInWithPermissions(Collections.singleton(roleId)))
+                .thenReturn(Collections.singleton(role));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> rbacSecurityAspect.checkPermission(joinPoint, badValuePermission));
+        assertEquals("Required permission cannot be null or empty", exception.getMessage());
+        verify(joinPoint, never()).proceed();
+    }
 }
