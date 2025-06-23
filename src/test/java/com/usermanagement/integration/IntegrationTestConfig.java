@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ActiveProfiles;
+import com.usermanagement.config.AuditingConfig;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
  */
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(AuditingConfig.class)
 public abstract class IntegrationTestConfig {
 
     @TestConfiguration

@@ -7,18 +7,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.usermanagement.dto.StandardResponse;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping(&quot;/api/users&quot;)
-<span class="fc" id="L13">@RequiredArgsConstructor</span>
+<span class="fc" id="L15">@RequiredArgsConstructor</span>
+@Validated
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity&lt;UserDto&gt; createUser(@Valid @RequestBody UserDto userDto) {
-<span class="fc" id="L20">        UserDto createdUser = userService.createUser(userDto);</span>
-<span class="fc" id="L21">        return new ResponseEntity&lt;&gt;(createdUser, HttpStatus.CREATED);</span>
+    public ResponseEntity&lt;StandardResponse&lt;UserDto&gt;&gt; createUser(@RequestBody @Valid UserDto userDto) {
+         try {
+<span class="fc" id="L24">            UserDto createdUser = userService.createUser(userDto);</span>
+<span class="fc" id="L25">            return new ResponseEntity&lt;&gt;(StandardResponse.success(createdUser, null), HttpStatus.CREATED);</span>
+<span class="nc" id="L26">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L27">            return new ResponseEntity&lt;&gt;(StandardResponse.error(e.getMessage(), null), HttpStatus.BAD_REQUEST);</span>
+        }
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

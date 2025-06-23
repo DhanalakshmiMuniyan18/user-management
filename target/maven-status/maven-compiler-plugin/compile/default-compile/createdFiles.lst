@@ -93,6 +93,7 @@ com/usermanagement/dto/PaymentResult$PaymentResultBuilder.class
 com/userservice/management/rbac/service/PermissionService.class
 com/usermanagement/payment/strategy/PaymentStrategy.class
 com/usermanagement/mapper/UserMapperImpl.class
+com/usermanagement/config/AuditingConfig.class
 com/usermanagement/mapper/PermissionMapperImpl.class
 com/usermanagement/payment/strategy/CryptoPaymentStrategy.class
 com/usermanagement/dto/RoleDto.class

@@ -4,6 +4,7 @@ import com.usermanagement.model.entity.AccessRequest;
 import com.usermanagement.model.entity.AccessRequest.Status;
 import com.usermanagement.model.entity.Role;
 import com.usermanagement.model.entity.User;
+import com.usermanagement.config.AuditingConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
+@Import(AuditingConfig.class)
 class AccessRequestRepositoryTest {
 
     @Autowired

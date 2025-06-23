@@ -64,10 +64,10 @@ import java.util.Set;
 
     @Override
     public boolean equals(Object o) {
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (this == o) return true;</span>
-<span class="nc bnc" id="L68" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
-<span class="nc" id="L69">        UserDto userDto = (UserDto) o;</span>
-<span class="nc" id="L70">        return Objects.equals(id, userDto.id);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="fc bfc" id="L68" title="All 4 branches covered.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L69">        UserDto userDto = (UserDto) o;</span>
+<span class="fc" id="L70">        return Objects.equals(id, userDto.id);</span>
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import com.usermanagement.config.TestConfig;
+import com.usermanagement.config.AuditingConfig;
 
 /**
  * @author Saravanamuthukumar S
@@ -22,6 +23,7 @@ import com.usermanagement.config.TestConfig;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
+@Import(AuditingConfig.class)
 class UserRepositoryTest {
 
     @Autowired

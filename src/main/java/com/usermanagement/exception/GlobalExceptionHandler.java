@@ -28,4 +28,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(StandardResponse.error("Internal server error", correlationId));
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
+        String correlationId = MDC.get("correlationId");
+        log.error("Illegal argument error", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(StandardResponse.error(ex.getMessage(), correlationId));
+    }
 } 

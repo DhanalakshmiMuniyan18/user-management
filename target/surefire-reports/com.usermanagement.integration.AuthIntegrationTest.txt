@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.usermanagement.integration.AuthIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.001 s - in com.usermanagement.integration.AuthIntegrationTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.262 s - in com.usermanagement.integration.AuthIntegrationTest

@@ -30,20 +30,20 @@ public class AuditLogServiceImpl implements AuditLogService {
 
     @Override
     public AuditLogDto createLog(AuditLogDto auditLogDto) {
-<span class="nc" id="L33">        User user = userRepository.findById(auditLogDto.getUserId())</span>
-<span class="nc" id="L34">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User not found with id: &quot; + auditLogDto.getUserId()));</span>
-<span class="nc" id="L35">        AuditLog auditLog = auditLogMapper.toEntity(auditLogDto);</span>
-<span class="nc" id="L36">        auditLog.setUser(user);</span>
-<span class="nc" id="L37">        AuditLog saved = auditLogRepository.save(auditLog);</span>
-<span class="nc" id="L38">        return auditLogMapper.toDto(saved);</span>
+<span class="fc" id="L33">        User user = userRepository.findById(auditLogDto.getUserId())</span>
+<span class="fc" id="L34">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User not found with id: &quot; + auditLogDto.getUserId()));</span>
+<span class="fc" id="L35">        AuditLog auditLog = auditLogMapper.toEntity(auditLogDto);</span>
+<span class="fc" id="L36">        auditLog.setUser(user);</span>
+<span class="fc" id="L37">        AuditLog saved = auditLogRepository.save(auditLog);</span>
+<span class="fc" id="L38">        return auditLogMapper.toDto(saved);</span>
     }
 
     @Override
     @Transactional(readOnly = true)
     public AuditLogDto getLogById(Long id) {
-<span class="nc" id="L44">        return auditLogRepository.findById(id)</span>
-<span class="nc" id="L45">            .map(auditLogMapper::toDto)</span>
-<span class="nc" id="L46">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;AuditLog not found with id: &quot; + id));</span>
+<span class="fc" id="L44">        return auditLogRepository.findById(id)</span>
+<span class="fc" id="L45">            .map(auditLogMapper::toDto)</span>
+<span class="fc" id="L46">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;AuditLog not found with id: &quot; + id));</span>
     }
 
     @Override
@@ -51,15 +51,15 @@ public class AuditLogServiceImpl implements AuditLogService {
     public Page&lt;AuditLogDto&gt; getAllLogs(String search, Pageable pageable) {
         // Since we removed the generic search method, we'll use findAll for now
         // You can implement a more specific search later if needed
-<span class="nc" id="L54">        return auditLogRepository.findAll(pageable)</span>
-<span class="nc" id="L55">            .map(auditLogMapper::toDto);</span>
+<span class="fc" id="L54">        return auditLogRepository.findAll(pageable)</span>
+<span class="fc" id="L55">            .map(auditLogMapper::toDto);</span>
     }
 
     @Override
     public void deleteLog(Long id) {
-<span class="nc" id="L60">        AuditLog log = auditLogRepository.findById(id)</span>
-<span class="nc" id="L61">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;AuditLog not found with id: &quot; + id));</span>
-<span class="nc" id="L62">        auditLogRepository.delete(log);</span>
-<span class="nc" id="L63">    }</span>
+<span class="fc" id="L60">        AuditLog log = auditLogRepository.findById(id)</span>
+<span class="fc" id="L61">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;AuditLog not found with id: &quot; + id));</span>
+<span class="fc" id="L62">        auditLogRepository.delete(log);</span>
+<span class="fc" id="L63">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

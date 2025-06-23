@@ -75,6 +75,7 @@
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/mapper/AccessRequestMapper.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/controller/AuthController.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/repository/AuditLogRepository.java
+/home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/config/AuditingConfig.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/model/entity/Role.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/mapper/AuditLogMapper.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/main/java/com/usermanagement/observer/impl/OrderEventSubject.java
