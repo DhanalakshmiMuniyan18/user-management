@@ -14,19 +14,23 @@ import org.springframework.stereotype.Component;
 <span class="fc" id="L14">    private static final Logger logger = LoggerFactory.getLogger(AnalyticsObserver.class);</span>
 
     @Override
-    public void onEvent(OrderEvent event) {
-<span class="nc" id="L18">        logger.info(&quot;[Analytics] Recording order {} for analytics&quot;, event.getOrderId());</span>
+    public void onEvent(OrderEvent event) throws Exception {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (event == null) {</span>
+<span class="fc" id="L19">            logger.error(&quot;Received null event&quot;);</span>
+<span class="fc" id="L20">            throw new IllegalArgumentException(&quot;Event cannot be null&quot;);</span>
+        }
+<span class="fc" id="L22">        logger.info(&quot;[Analytics] Recording order {} for analytics&quot;, event.getOrderId());</span>
         // Simulate analytics event...
-<span class="nc" id="L20">    }</span>
+<span class="fc" id="L24">    }</span>
 
     @Override
     public ObserverPriority getPriority() {
-<span class="nc" id="L24">        return ObserverPriority.LOW;</span>
+<span class="fc" id="L28">        return ObserverPriority.LOW;</span>
     }
 
     @Override
     public boolean supports(OrderEvent event) {
-<span class="nc" id="L29">        return true;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        return event != null;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

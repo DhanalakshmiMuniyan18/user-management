@@ -20,35 +20,46 @@ import java.util.concurrent.CompletableFuture;
     @Override
     public boolean validate(PaymentRequest request) {
         // Example: Luhn check, expiry date, PCI compliance
-<span class="nc" id="L23">        logger.debug(&quot;Validating credit card payment for order {}&quot;, request.getOrderId());</span>
+<span class="fc" id="L23">        logger.debug(&quot;Validating credit card payment for order {}&quot;, request.getOrderId());</span>
         // TODO: Implement real validation
-<span class="nc" id="L25">        return true;</span>
+<span class="fc" id="L25">        return true;</span>
     }
 
     @Override
     @Async
     public PaymentResult processPayment(PaymentRequest request) {
-<span class="nc" id="L31">        logger.info(&quot;Processing credit card payment for order {}&quot;, request.getOrderId());</span>
+<span class="fc" id="L31">        logger.info(&quot;Processing credit card payment for order {}&quot;, request.getOrderId());</span>
         // TODO: Integrate with payment gateway, fraud detection, retry logic
         // Simulate async processing
         try {
-<span class="nc" id="L35">            Thread.sleep(500); // Simulate processing delay</span>
+<span class="fc" id="L35">            Thread.sleep(500); // Simulate processing delay</span>
 <span class="nc" id="L36">        } catch (InterruptedException e) {</span>
 <span class="nc" id="L37">            Thread.currentThread().interrupt();</span>
-<span class="nc" id="L38">            return new PaymentResult(null, PaymentStatus.FAILED.name(), &quot;Interrupted&quot;);</span>
-<span class="nc" id="L39">        }</span>
-<span class="nc" id="L40">        return new PaymentResult(&quot;txn-cc-&quot; + request.getOrderId(), PaymentStatus.PENDING.name(), &quot;Processing&quot;);</span>
+<span class="nc" id="L38">            return PaymentResult.builder()</span>
+<span class="nc" id="L39">                .orderId(request.getOrderId())</span>
+<span class="nc" id="L40">                .amount(request.getAmount().doubleValue())</span>
+<span class="nc" id="L41">                .status(PaymentStatus.FAILED.name())</span>
+<span class="nc" id="L42">                .message(&quot;Interrupted&quot;)</span>
+<span class="nc" id="L43">                .build();</span>
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">        return PaymentResult.builder()</span>
+<span class="fc" id="L46">            .orderId(request.getOrderId())</span>
+<span class="fc" id="L47">            .amount(request.getAmount().doubleValue())</span>
+<span class="fc" id="L48">            .transactionId(&quot;txn-cc-&quot; + request.getOrderId())</span>
+<span class="fc" id="L49">            .status(PaymentStatus.PENDING.name())</span>
+<span class="fc" id="L50">            .message(&quot;Processing&quot;)</span>
+<span class="fc" id="L51">            .build();</span>
     }
 
     @Override
     public void handleCallback(String payload) {
-<span class="nc" id="L45">        logger.info(&quot;Handling credit card payment callback: {}&quot;, payload);</span>
+<span class="fc" id="L56">        logger.info(&quot;Handling credit card payment callback: {}&quot;, payload);</span>
         // TODO: Parse and update payment status
-<span class="nc" id="L47">    }</span>
+<span class="fc" id="L58">    }</span>
 
     @Override
     public String getStrategyName() {
-<span class="fc" id="L51">        return &quot;CREDIT_CARD&quot;;</span>
+<span class="fc" id="L62">        return &quot;CREDIT_CARD&quot;;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

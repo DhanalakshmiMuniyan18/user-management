@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = &quot;permissions&quot;)
 @Getter
-<span class="pc" id="L17">@Setter</span>
+<span class="fc" id="L17">@Setter</span>
 <span class="fc" id="L18">public class Permission {</span>
 
     @Id
@@ -29,6 +29,6 @@ import java.util.Set;
 <span class="fc" id="L29">    private String description;</span>
 
 <span class="fc" id="L31">    @ManyToMany(mappedBy = &quot;permissions&quot;)</span>
-<span class="nc" id="L32">    private Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L32">    private Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

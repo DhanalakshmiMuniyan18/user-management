@@ -4,21 +4,19 @@
  */
 package com.usermanagement.dto;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentResult {
+    private String orderId;
+    private double amount;
     private String transactionId;
     private String status;
     private String message;
-
-    public PaymentResult() {}
-    public PaymentResult(String transactionId, String status, String message) {
-        this.transactionId = transactionId;
-        this.status = status;
-        this.message = message;
-    }
-    public String getTransactionId() { return transactionId; }
-    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
 } 

@@ -32,20 +32,31 @@ import org.springframework.stereotype.Component;
 <span class="nc" id="L32">            Thread.sleep(700);</span>
 <span class="nc" id="L33">        } catch (InterruptedException e) {</span>
 <span class="nc" id="L34">            Thread.currentThread().interrupt();</span>
-<span class="nc" id="L35">            return new PaymentResult(null, PaymentStatus.FAILED.name(), &quot;Interrupted&quot;);</span>
-<span class="nc" id="L36">        }</span>
-<span class="nc" id="L37">        return new PaymentResult(&quot;txn-crypto-&quot; + request.getOrderId(), PaymentStatus.PENDING.name(), &quot;Processing&quot;);</span>
+<span class="nc" id="L35">            return PaymentResult.builder()</span>
+<span class="nc" id="L36">                .orderId(request.getOrderId())</span>
+<span class="nc" id="L37">                .amount(request.getAmount().doubleValue())</span>
+<span class="nc" id="L38">                .status(PaymentStatus.FAILED.name())</span>
+<span class="nc" id="L39">                .message(&quot;Interrupted&quot;)</span>
+<span class="nc" id="L40">                .build();</span>
+<span class="nc" id="L41">        }</span>
+<span class="nc" id="L42">        return PaymentResult.builder()</span>
+<span class="nc" id="L43">            .orderId(request.getOrderId())</span>
+<span class="nc" id="L44">            .amount(request.getAmount().doubleValue())</span>
+<span class="nc" id="L45">            .transactionId(&quot;txn-crypto-&quot; + request.getOrderId())</span>
+<span class="nc" id="L46">            .status(PaymentStatus.PENDING.name())</span>
+<span class="nc" id="L47">            .message(&quot;Processing&quot;)</span>
+<span class="nc" id="L48">            .build();</span>
     }
 
     @Override
     public void handleCallback(String payload) {
-<span class="nc" id="L42">        logger.info(&quot;Handling crypto payment callback: {}&quot;, payload);</span>
+<span class="nc" id="L53">        logger.info(&quot;Handling crypto payment callback: {}&quot;, payload);</span>
         // TODO: Parse and update payment status
-<span class="nc" id="L44">    }</span>
+<span class="nc" id="L55">    }</span>
 
     @Override
     public String getStrategyName() {
-<span class="fc" id="L48">        return &quot;CRYPTOCURRENCY&quot;;</span>
+<span class="fc" id="L59">        return &quot;CRYPTOCURRENCY&quot;;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -5,20 +5,29 @@
 package com.usermanagement.observer.impl;
 
 import com.usermanagement.observer.core.Event;
+import lombok.Getter;
 
+@Getter
 public class OrderEvent extends Event {
-    private final String orderId;
-    private final String userId;
-    private final double amount;
+<span class="fc" id="L12">    private final String orderId;</span>
+<span class="fc" id="L13">    private final String userId;</span>
+<span class="fc" id="L14">    private final double amount;</span>
+<span class="fc" id="L15">    private final String eventType;</span>
+<span class="fc" id="L16">    private final String message;</span>
 
-    public OrderEvent(String orderId, String userId, double amount) {
-<span class="nc" id="L15">        super();</span>
-<span class="nc" id="L16">        this.orderId = orderId;</span>
-<span class="nc" id="L17">        this.userId = userId;</span>
-<span class="nc" id="L18">        this.amount = amount;</span>
-<span class="nc" id="L19">    }</span>
-<span class="nc" id="L20">    public String getOrderId() { return orderId; }</span>
-<span class="nc" id="L21">    public String getUserId() { return userId; }</span>
-<span class="nc" id="L22">    public double getAmount() { return amount; }</span>
+    public OrderEvent(String orderId, String userId, double amount, String eventType, String message) {
+<span class="fc" id="L19">        super();</span>
+<span class="fc" id="L20">        this.orderId = orderId;</span>
+<span class="fc" id="L21">        this.userId = userId;</span>
+<span class="fc" id="L22">        this.amount = amount;</span>
+<span class="fc" id="L23">        this.eventType = eventType;</span>
+<span class="fc" id="L24">        this.message = message;</span>
+<span class="fc" id="L25">    }</span>
+
+    @Override
+    public String toString() {
+<span class="fc" id="L29">        return String.format(&quot;OrderEvent{orderId='%s', userId='%s', amount=%.2f, eventType='%s', message='%s'}&quot;,</span>
+<span class="fc" id="L30">            orderId, userId, amount, eventType, message);</span>
+    }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

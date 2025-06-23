@@ -88,6 +88,8 @@ com/usermanagement/model/entity/User.class
 com/usermanagement/payment/strategy/DigitalWalletPaymentStrategy.class
 com/usermanagement/service/PermissionService.class
 com/usermanagement/service/impl/UserServiceImpl.class
+com/usermanagement/dto/PaymentRequest$PaymentRequestBuilder.class
+com/usermanagement/dto/PaymentResult$PaymentResultBuilder.class
 com/userservice/management/rbac/service/PermissionService.class
 com/usermanagement/payment/strategy/PaymentStrategy.class
 com/usermanagement/mapper/UserMapperImpl.class

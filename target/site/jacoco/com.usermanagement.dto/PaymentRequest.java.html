@@ -7,41 +7,31 @@ package com.usermanagement.dto;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-<span class="nc" id="L11">public class PaymentRequest {</span>
+<span class="pc bpc" id="L15" title="40 of 70 branches missed.">@Data</span>
+<span class="pc" id="L16">@Builder</span>
+<span class="fc" id="L17">@NoArgsConstructor</span>
+<span class="fc" id="L18">@AllArgsConstructor</span>
+public class PaymentRequest {
     @NotBlank
-    private String orderId;
+<span class="fc" id="L21">    private String orderId;</span>
     @NotBlank
-    private String customerId;
+<span class="fc" id="L23">    private String customerId;</span>
     @NotNull
     @DecimalMin(&quot;0.01&quot;)
-    private BigDecimal amount;
+<span class="fc" id="L26">    private BigDecimal amount;</span>
     @NotBlank
-    private String currency;
+<span class="fc" id="L28">    private String currency;</span>
     @NotBlank
-    private String paymentType;
+<span class="fc" id="L30">    private String paymentMethod;</span>
     @NotBlank
-    private String region;
+<span class="fc" id="L32">    private String region;</span>
     @NotBlank
-    private String merchantId;
-    private Map&lt;String, Object&gt; paymentDetails;
-
-    // Getters and setters
-<span class="nc" id="L30">    public String getOrderId() { return orderId; }</span>
-<span class="nc" id="L31">    public void setOrderId(String orderId) { this.orderId = orderId; }</span>
-<span class="nc" id="L32">    public String getCustomerId() { return customerId; }</span>
-<span class="nc" id="L33">    public void setCustomerId(String customerId) { this.customerId = customerId; }</span>
-<span class="nc" id="L34">    public BigDecimal getAmount() { return amount; }</span>
-<span class="nc" id="L35">    public void setAmount(BigDecimal amount) { this.amount = amount; }</span>
-<span class="nc" id="L36">    public String getCurrency() { return currency; }</span>
-<span class="nc" id="L37">    public void setCurrency(String currency) { this.currency = currency; }</span>
-<span class="nc" id="L38">    public String getPaymentType() { return paymentType; }</span>
-<span class="nc" id="L39">    public void setPaymentType(String paymentType) { this.paymentType = paymentType; }</span>
-<span class="nc" id="L40">    public String getRegion() { return region; }</span>
-<span class="nc" id="L41">    public void setRegion(String region) { this.region = region; }</span>
-<span class="nc" id="L42">    public String getMerchantId() { return merchantId; }</span>
-<span class="nc" id="L43">    public void setMerchantId(String merchantId) { this.merchantId = merchantId; }</span>
-<span class="nc" id="L44">    public Map&lt;String, Object&gt; getPaymentDetails() { return paymentDetails; }</span>
-<span class="nc" id="L45">    public void setPaymentDetails(Map&lt;String, Object&gt; paymentDetails) { this.paymentDetails = paymentDetails; }</span>
+<span class="fc" id="L34">    private String merchantId;</span>
+<span class="fc" id="L35">    private Map&lt;String, Object&gt; paymentDetails;</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

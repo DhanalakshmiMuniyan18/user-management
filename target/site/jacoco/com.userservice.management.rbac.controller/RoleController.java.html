@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(&quot;/api/v1/roles&quot;)
-<span class="nc" id="L22">@RequiredArgsConstructor</span>
+<span class="fc" id="L22">@RequiredArgsConstructor</span>
 @Tag(name = &quot;Role Management&quot;, description = &quot;APIs for managing roles&quot;)
 public class RoleController {
 
@@ -28,19 +28,19 @@ public class RoleController {
     @PostMapping
     @Operation(summary = &quot;Create a new role&quot;)
     public ResponseEntity&lt;RoleDTO&gt; createRole(@Valid @RequestBody RoleDTO roleDTO) {
-<span class="nc" id="L31">        return new ResponseEntity&lt;&gt;(roleService.createRole(roleDTO), HttpStatus.CREATED);</span>
+<span class="fc" id="L31">        return new ResponseEntity&lt;&gt;(roleService.createRole(roleDTO), HttpStatus.CREATED);</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Get a role by ID&quot;)
     public ResponseEntity&lt;RoleDTO&gt; getRole(@PathVariable Long id) {
-<span class="nc" id="L37">        return ResponseEntity.ok(roleService.getRole(id));</span>
+<span class="fc" id="L37">        return ResponseEntity.ok(roleService.getRole(id));</span>
     }
 
     @GetMapping
     @Operation(summary = &quot;Get all roles&quot;)
     public ResponseEntity&lt;List&lt;RoleDTO&gt;&gt; getAllRoles() {
-<span class="nc" id="L43">        return ResponseEntity.ok(roleService.getAllRoles());</span>
+<span class="fc" id="L43">        return ResponseEntity.ok(roleService.getAllRoles());</span>
     }
 
     @PutMapping(&quot;/{id}&quot;)
@@ -48,14 +48,14 @@ public class RoleController {
     public ResponseEntity&lt;RoleDTO&gt; updateRole(
             @PathVariable Long id,
             @Valid @RequestBody RoleDTO roleDTO) {
-<span class="nc" id="L51">        return ResponseEntity.ok(roleService.updateRole(id, roleDTO));</span>
+<span class="fc" id="L51">        return ResponseEntity.ok(roleService.updateRole(id, roleDTO));</span>
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Delete a role&quot;)
     public ResponseEntity&lt;Void&gt; deleteRole(@PathVariable Long id) {
-<span class="nc" id="L57">        roleService.deleteRole(id);</span>
-<span class="nc" id="L58">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L57">        roleService.deleteRole(id);</span>
+<span class="fc" id="L58">        return ResponseEntity.noContent().build();</span>
     }
 
     @PostMapping(&quot;/{roleId}/permissions&quot;)
@@ -63,7 +63,7 @@ public class RoleController {
     public ResponseEntity&lt;RoleDTO&gt; assignPermissionsToRole(
             @PathVariable Long roleId,
             @RequestBody Set&lt;Long&gt; permissionIds) {
-<span class="nc" id="L66">        return ResponseEntity.ok(roleService.assignPermissionsToRole(roleId, permissionIds));</span>
+<span class="fc" id="L66">        return ResponseEntity.ok(roleService.assignPermissionsToRole(roleId, permissionIds));</span>
     }
 
     @DeleteMapping(&quot;/{roleId}/permissions/{permissionId}&quot;)
@@ -71,7 +71,7 @@ public class RoleController {
     public ResponseEntity&lt;RoleDTO&gt; removePermissionFromRole(
             @PathVariable Long roleId,
             @PathVariable Long permissionId) {
-<span class="nc" id="L74">        return ResponseEntity.ok(roleService.removePermissionFromRole(roleId, permissionId));</span>
+<span class="fc" id="L74">        return ResponseEntity.ok(roleService.removePermissionFromRole(roleId, permissionId));</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

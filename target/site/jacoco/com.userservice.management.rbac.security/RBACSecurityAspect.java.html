@@ -4,13 +4,14 @@ import com.userservice.management.rbac.model.Permission;
 import com.userservice.management.rbac.model.Role;
 import com.userservice.management.rbac.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -18,51 +19,163 @@ import java.util.stream.Collectors;
 
 /**
  * Aspect for handling RBAC security checks.
+ * This implementation handles various edge cases:
+ * - Invalid role ID formats
+ * - Empty permission arrays
+ * - Roles without permissions
+ * - Non-existent roles
+ * - Multiple roles with conflicting permissions
+ * - Case-sensitive permission names
+ * - Special characters in permission names
+ * - Anonymous authentication
+ * - Null authentication
+ * 
  * @author Saravanamuthukumar S
  */
 @Aspect
 @Component
-<span class="nc" id="L25">@RequiredArgsConstructor</span>
+<span class="fc" id="L37">@RequiredArgsConstructor</span>
+<span class="fc" id="L38">@Slf4j</span>
 public class RBACSecurityAspect {
 
+    private static final String ROLE_PREFIX = &quot;ROLE_&quot;;
+    private static final String ANONYMOUS_USER = &quot;anonymousUser&quot;;
+    private static final int MAX_ROLES_PER_USER = 100; // Configurable maximum number of roles per user
+    
     private final RoleRepository roleRepository;
 
     @Around(&quot;@annotation(requirePermission)&quot;)
     public Object checkPermission(ProceedingJoinPoint joinPoint, RequirePermission requirePermission) throws Throwable {
-<span class="nc" id="L32">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="nc bnc" id="L33" title="All 4 branches missed.">        if (authentication == null || !authentication.isAuthenticated()) {</span>
-<span class="nc" id="L34">            throw new SecurityException(&quot;User not authenticated&quot;);</span>
+        // Validate input parameters
+<span class="pc bpc" id="L50" title="2 of 4 branches missed.">        if (requirePermission == null || requirePermission.value() == null) {</span>
+<span class="nc" id="L51">            throw new IllegalArgumentException(&quot;RequirePermission annotation cannot be null and must have value&quot;);</span>
         }
 
-<span class="nc" id="L37">        String username = authentication.getName();</span>
-<span class="nc" id="L38">        Set&lt;Role&gt; userRoles = roleRepository.findByIdInWithPermissions(</span>
-<span class="nc" id="L39">                authentication.getAuthorities().stream()</span>
-<span class="nc" id="L40">                        .map(authority -&gt; Long.parseLong(authority.getAuthority().replace(&quot;ROLE_&quot;, &quot;&quot;)))</span>
-<span class="nc" id="L41">                        .collect(Collectors.toSet())</span>
-        );
+        // Get and validate authentication
+<span class="fc" id="L55">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="fc" id="L56">        validateAuthentication(authentication);</span>
 
-<span class="nc" id="L44">        Set&lt;String&gt; userPermissions = userRoles.stream()</span>
-<span class="nc" id="L45">                .flatMap(role -&gt; role.getPermissions().stream())</span>
-<span class="nc" id="L46">                .map(Permission::getName)</span>
-<span class="nc" id="L47">                .collect(Collectors.toSet());</span>
-
-<span class="nc" id="L49">        String[] requiredPermissions = requirePermission.value();</span>
-        boolean hasPermission;
-
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (requirePermission.allRequired()) {</span>
-<span class="nc" id="L53">            hasPermission = Arrays.stream(requiredPermissions)</span>
-<span class="nc" id="L54">                    .allMatch(userPermissions::contains);</span>
-        } else {
-<span class="nc" id="L56">            hasPermission = Arrays.stream(requiredPermissions)</span>
-<span class="nc" id="L57">                    .anyMatch(userPermissions::contains);</span>
+<span class="fc" id="L58">        String username = authentication.getName();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (ANONYMOUS_USER.equals(username)) {</span>
+<span class="fc" id="L60">            throw new SecurityException(&quot;Anonymous users are not allowed to access secured methods&quot;);</span>
         }
 
-<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (!hasPermission) {</span>
-<span class="nc" id="L61">            throw new SecurityException(&quot;User &quot; + username + &quot; does not have the required permissions: &quot; +</span>
-<span class="nc" id="L62">                    String.join(&quot;, &quot;, requiredPermissions));</span>
-        }
+        // Extract and validate role IDs
+<span class="fc" id="L64">        Set&lt;Long&gt; roleIds = extractRoleIds(authentication);</span>
+<span class="fc" id="L65">        validateRoleIds(roleIds, username);</span>
 
-<span class="nc" id="L65">        return joinPoint.proceed();</span>
+        // Fetch and validate roles
+<span class="fc" id="L68">        Set&lt;Role&gt; userRoles = fetchAndValidateRoles(roleIds, username);</span>
+
+        // Extract and validate permissions
+<span class="fc" id="L71">        Set&lt;String&gt; userPermissions = extractPermissions(userRoles);</span>
+<span class="fc" id="L72">        log.debug(&quot;User permissions for {}: {}&quot;, username, userPermissions);</span>
+
+        // Validate required permissions
+<span class="fc" id="L75">        String[] requiredPermissions = requirePermission.value();</span>
+<span class="fc" id="L76">        boolean allRequired = requirePermission.allRequired();</span>
+<span class="fc" id="L77">        validateRequiredPermissions(requiredPermissions, userPermissions, username, allRequired);</span>
+
+        // Execute the method
+        try {
+<span class="fc" id="L81">            return joinPoint.proceed();</span>
+<span class="fc" id="L82">        } catch (Throwable t) {</span>
+<span class="fc" id="L83">            log.error(&quot;Error executing secured method for user {}: {}&quot;, username, t.getMessage());</span>
+<span class="fc" id="L84">            throw t;</span>
+        }
     }
+
+    private void validateAuthentication(Authentication authentication) {
+<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (authentication == null || !authentication.isAuthenticated()) {</span>
+<span class="fc" id="L90">            throw new SecurityException(&quot;User not authenticated&quot;);</span>
+        }
+<span class="fc" id="L92">    }</span>
+
+    private Set&lt;Long&gt; extractRoleIds(Authentication authentication) {
+<span class="fc" id="L95">        Set&lt;Long&gt; roleIds = authentication.getAuthorities().stream()</span>
+<span class="fc" id="L96">                .map(authority -&gt; {</span>
+<span class="fc" id="L97">                    String roleId = authority.getAuthority();</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">                    if (!roleId.startsWith(ROLE_PREFIX)) {</span>
+<span class="nc" id="L99">                        log.warn(&quot;Invalid role format: {}&quot;, roleId);</span>
+<span class="nc" id="L100">                        return null;</span>
+                    }
+                    try {
+<span class="fc" id="L103">                        return Long.parseLong(roleId.substring(ROLE_PREFIX.length()));</span>
+<span class="fc" id="L104">                    } catch (NumberFormatException e) {</span>
+<span class="fc" id="L105">                        log.warn(&quot;Invalid role ID format: {}&quot;, roleId);</span>
+<span class="fc" id="L106">                        return null;</span>
+                    }
+                })
+<span class="fc bfc" id="L109" title="All 2 branches covered.">                .filter(id -&gt; id != null)</span>
+<span class="fc" id="L110">                .collect(Collectors.toSet());</span>
+
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (roleIds.isEmpty()) {</span>
+<span class="fc" id="L113">            throw new SecurityException(&quot;No valid roles found&quot;);</span>
+        }
+
+<span class="fc" id="L116">        return roleIds;</span>
+    }
+
+    private void validateRoleIds(Set&lt;Long&gt; roleIds, String username) {
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (roleIds.size() &gt; MAX_ROLES_PER_USER) {</span>
+<span class="nc" id="L121">            throw new SecurityException(&quot;User &quot; + username + &quot; exceeds maximum allowed roles: &quot; + MAX_ROLES_PER_USER);</span>
+        }
+<span class="fc" id="L123">    }</span>
+
+    private Set&lt;Role&gt; fetchAndValidateRoles(Set&lt;Long&gt; roleIds, String username) {
+<span class="fc" id="L126">        Set&lt;Role&gt; userRoles = roleRepository.findByIdInWithPermissions(roleIds);</span>
+        
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (userRoles.isEmpty()) {</span>
+<span class="fc" id="L129">            throw new SecurityException(&quot;No roles found for user &quot; + username);</span>
+        }
+
+        // Validate each role has permissions
+<span class="fc" id="L133">        userRoles.forEach(role -&gt; {</span>
+<span class="pc bpc" id="L134" title="1 of 4 branches missed.">            if (role.getPermissions() == null || role.getPermissions().isEmpty()) {</span>
+<span class="fc" id="L135">                log.warn(&quot;Role {} has no permissions&quot;, role.getName());</span>
+            }
+<span class="fc" id="L137">        });</span>
+
+<span class="fc" id="L139">        return userRoles;</span>
+    }
+
+    private Set&lt;String&gt; extractPermissions(Set&lt;Role&gt; userRoles) {
+<span class="fc" id="L143">        return userRoles.stream()</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">                .filter(role -&gt; role.getPermissions() != null)</span>
+<span class="fc" id="L145">                .flatMap(role -&gt; role.getPermissions().stream())</span>
+<span class="fc" id="L146">                .filter(permission -&gt; StringUtils.hasText(permission.getName()))</span>
+<span class="fc" id="L147">                .map(Permission::getName)</span>
+<span class="fc" id="L148">                .collect(Collectors.toSet());</span>
+    }
+
+    private void validateRequiredPermissions(String[] requiredPermissions, Set&lt;String&gt; userPermissions, String username, boolean allRequired) {
+        // Handle empty permissions array
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (requiredPermissions.length == 0) {</span>
+<span class="fc" id="L154">            log.debug(&quot;No permissions required, access granted&quot;);</span>
+<span class="fc" id="L155">            return;</span>
+        }
+
+        // Validate each required permission
+<span class="fc" id="L159">        Arrays.stream(requiredPermissions)</span>
+<span class="fc" id="L160">                .forEach(permission -&gt; {</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                    if (!StringUtils.hasText(permission)) {</span>
+<span class="nc" id="L162">                        throw new IllegalArgumentException(&quot;Required permission cannot be null or empty&quot;);</span>
+                    }
+<span class="fc" id="L164">                });</span>
+
+        boolean hasPermission;
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (allRequired) {</span>
+<span class="fc" id="L168">            hasPermission = Arrays.stream(requiredPermissions)</span>
+<span class="fc" id="L169">                    .allMatch(userPermissions::contains);</span>
+        } else {
+<span class="fc" id="L171">            hasPermission = Arrays.stream(requiredPermissions)</span>
+<span class="fc" id="L172">                    .anyMatch(userPermissions::contains);</span>
+        }
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (!hasPermission) {</span>
+<span class="fc" id="L176">            throw new SecurityException(&quot;User &quot; + username + &quot; does not have the required permissions: &quot; +</span>
+<span class="fc" id="L177">                    String.join(&quot;, &quot;, requiredPermissions));</span>
+        }
+<span class="fc" id="L179">    }</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

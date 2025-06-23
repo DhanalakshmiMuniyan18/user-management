@@ -28,11 +28,11 @@ public class PaymentStrategyFactory {
      * @return the PaymentStrategy
      */
     public PaymentStrategy getStrategy(String type) {
-<span class="nc" id="L31">        PaymentStrategy strategy = strategyMap.get(type);</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (strategy == null) {</span>
-<span class="nc" id="L33">            throw new IllegalArgumentException(&quot;Unsupported payment type: &quot; + type);</span>
+<span class="fc" id="L31">        PaymentStrategy strategy = strategyMap.get(type);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (strategy == null) {</span>
+<span class="fc" id="L33">            throw new IllegalArgumentException(&quot;Unsupported payment type: &quot; + type);</span>
         }
-<span class="nc" id="L35">        return strategy;</span>
+<span class="fc" id="L35">        return strategy;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

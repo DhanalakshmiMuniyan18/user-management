@@ -14,7 +14,11 @@ public class SmsNotificationObserver implements Observer<OrderEvent> {
     private static final Logger logger = LoggerFactory.getLogger(SmsNotificationObserver.class);
 
     @Override
-    public void onEvent(OrderEvent event) {
+    public void onEvent(OrderEvent event) throws Exception {
+        if (event == null) {
+            logger.error("Received null event");
+            throw new IllegalArgumentException("Event cannot be null");
+        }
         logger.info("[SMS] Sending SMS for order {} to user {}", event.getOrderId(), event.getUserId());
         // Simulate SMS sending...
     }
@@ -26,6 +30,6 @@ public class SmsNotificationObserver implements Observer<OrderEvent> {
 
     @Override
     public boolean supports(OrderEvent event) {
-        return event.getAmount() > 100; // Only for high-value orders
+        return event != null && event.getAmount() > 100; // Only for high-value orders
     }
 } 

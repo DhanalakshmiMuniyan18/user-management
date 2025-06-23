@@ -4,22 +4,20 @@
  */
 package com.usermanagement.dto;
 
-public class PaymentResult {
-    private String transactionId;
-    private String status;
-    private String message;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-<span class="nc" id="L12">    public PaymentResult() {}</span>
-<span class="nc" id="L13">    public PaymentResult(String transactionId, String status, String message) {</span>
-<span class="nc" id="L14">        this.transactionId = transactionId;</span>
-<span class="nc" id="L15">        this.status = status;</span>
-<span class="nc" id="L16">        this.message = message;</span>
-<span class="nc" id="L17">    }</span>
-<span class="nc" id="L18">    public String getTransactionId() { return transactionId; }</span>
-<span class="nc" id="L19">    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }</span>
-<span class="nc" id="L20">    public String getStatus() { return status; }</span>
-<span class="nc" id="L21">    public void setStatus(String status) { this.status = status; }</span>
-<span class="nc" id="L22">    public String getMessage() { return message; }</span>
-<span class="nc" id="L23">    public void setMessage(String message) { this.message = message; }</span>
+<span class="pc bpc" id="L12" title="21 of 40 branches missed.">@Data</span>
+<span class="pc" id="L13">@Builder</span>
+<span class="fc" id="L14">@NoArgsConstructor</span>
+<span class="fc" id="L15">@AllArgsConstructor</span>
+public class PaymentResult {
+<span class="fc" id="L17">    private String orderId;</span>
+<span class="fc" id="L18">    private double amount;</span>
+<span class="fc" id="L19">    private String transactionId;</span>
+<span class="fc" id="L20">    private String status;</span>
+<span class="fc" id="L21">    private String message;</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

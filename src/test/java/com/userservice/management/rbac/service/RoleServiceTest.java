@@ -136,4 +136,55 @@ class RoleServiceTest {
         verify(permissionRepository).findByIdIn(permissionIds);
         verify(roleRepository).save(any(Role.class));
     }
+
+    @Test
+    void createRole_WithMultiplePermissions_Success() {
+        Permission permission2 = Permission.builder()
+                .id(2L)
+                .name("WRITE_USER")
+                .description("Can write user data")
+                .build();
+
+        RoleDTO newRoleDTO = RoleDTO.builder()
+                .name("ADMIN")
+                .description("Admin role with multiple permissions")
+                .permissionIds(Set.of(1L, 2L))
+                .build();
+
+        Role savedRole = Role.builder()
+                .id(2L)
+                .name("ADMIN")
+                .description("Admin role with multiple permissions")
+                .permissions(new HashSet<>(Arrays.asList(permission, permission2)))
+                .build();
+
+        when(roleRepository.existsByName("ADMIN")).thenReturn(false);
+        when(permissionRepository.findByIdIn(Set.of(1L, 2L))).thenReturn(Set.of(permission, permission2));
+        when(roleRepository.save(any(Role.class))).thenReturn(savedRole);
+
+        RoleDTO result = roleService.createRole(newRoleDTO);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("ADMIN");
+        assertThat(result.getDescription()).isEqualTo("Admin role with multiple permissions");
+        assertThat(result.getPermissionIds()).containsExactlyInAnyOrder(1L, 2L);
+
+        verify(roleRepository).existsByName("ADMIN");
+        verify(permissionRepository).findByIdIn(Set.of(1L, 2L));
+        verify(roleRepository).save(any(Role.class));
+    }
+
+    @Test
+    void createRole_WithBlankName_ShouldFailValidation() {
+        RoleDTO invalidRoleDTO = RoleDTO.builder()
+                .name("")
+                .description("Role with blank name")
+                .permissionIds(Set.of(1L))
+                .build();
+
+        // Simulate validation exception (if using a validator, e.g., javax.validation)
+        assertThatThrownBy(() -> roleService.createRole(invalidRoleDTO))
+                .isInstanceOf(Exception.class)
+                .hasMessageContaining("Role name is required");
+    }
 } 

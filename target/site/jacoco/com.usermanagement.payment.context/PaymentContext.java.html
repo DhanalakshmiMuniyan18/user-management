@@ -26,11 +26,16 @@ public class PaymentContext {
      * @return the payment result
      */
     public PaymentResult execute(PaymentRequest request) {
-<span class="nc" id="L29">        PaymentStrategy strategy = factory.getStrategy(request.getPaymentType());</span>
+<span class="nc" id="L29">        PaymentStrategy strategy = factory.getStrategy(request.getPaymentMethod());</span>
 <span class="nc bnc" id="L30" title="All 2 branches missed.">        if (!strategy.validate(request)) {</span>
-<span class="nc" id="L31">            return new PaymentResult(null, &quot;REJECTED&quot;, &quot;Validation failed&quot;);</span>
+<span class="nc" id="L31">            return PaymentResult.builder()</span>
+<span class="nc" id="L32">                .orderId(request.getOrderId())</span>
+<span class="nc" id="L33">                .amount(request.getAmount().doubleValue())</span>
+<span class="nc" id="L34">                .status(&quot;REJECTED&quot;)</span>
+<span class="nc" id="L35">                .message(&quot;Validation failed&quot;)</span>
+<span class="nc" id="L36">                .build();</span>
         }
-<span class="nc" id="L33">        return strategy.processPayment(request);</span>
+<span class="nc" id="L38">        return strategy.processPayment(request);</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

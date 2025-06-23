@@ -14,7 +14,11 @@ public class EmailNotificationObserver implements Observer<OrderEvent> {
     private static final Logger logger = LoggerFactory.getLogger(EmailNotificationObserver.class);
 
     @Override
-    public void onEvent(OrderEvent event) {
+    public void onEvent(OrderEvent event) throws Exception {
+        if (event == null) {
+            logger.error("Received null event");
+            throw new IllegalArgumentException("Event cannot be null");
+        }
         logger.info("[Email] Sending order confirmation for order {} to user {}", event.getOrderId(), event.getUserId());
         // Simulate email sending...
     }
@@ -26,6 +30,6 @@ public class EmailNotificationObserver implements Observer<OrderEvent> {
 
     @Override
     public boolean supports(OrderEvent event) {
-        return true; // All orders
+        return event != null;
     }
 } 

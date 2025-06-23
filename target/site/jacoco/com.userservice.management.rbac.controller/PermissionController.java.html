@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(&quot;/api/v1/permissions&quot;)
-<span class="nc" id="L21">@RequiredArgsConstructor</span>
+<span class="fc" id="L21">@RequiredArgsConstructor</span>
 @Tag(name = &quot;Permission Management&quot;, description = &quot;APIs for managing permissions&quot;)
 public class PermissionController {
 
@@ -27,19 +27,19 @@ public class PermissionController {
     @PostMapping
     @Operation(summary = &quot;Create a new permission&quot;)
     public ResponseEntity&lt;PermissionDTO&gt; createPermission(@Valid @RequestBody PermissionDTO permissionDTO) {
-<span class="nc" id="L30">        return new ResponseEntity&lt;&gt;(permissionService.createPermission(permissionDTO), HttpStatus.CREATED);</span>
+<span class="fc" id="L30">        return new ResponseEntity&lt;&gt;(permissionService.createPermission(permissionDTO), HttpStatus.CREATED);</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Get a permission by ID&quot;)
     public ResponseEntity&lt;PermissionDTO&gt; getPermission(@PathVariable Long id) {
-<span class="nc" id="L36">        return ResponseEntity.ok(permissionService.getPermission(id));</span>
+<span class="fc" id="L36">        return ResponseEntity.ok(permissionService.getPermission(id));</span>
     }
 
     @GetMapping
     @Operation(summary = &quot;Get all permissions&quot;)
     public ResponseEntity&lt;List&lt;PermissionDTO&gt;&gt; getAllPermissions() {
-<span class="nc" id="L42">        return ResponseEntity.ok(permissionService.getAllPermissions());</span>
+<span class="fc" id="L42">        return ResponseEntity.ok(permissionService.getAllPermissions());</span>
     }
 
     @PutMapping(&quot;/{id}&quot;)
@@ -47,14 +47,14 @@ public class PermissionController {
     public ResponseEntity&lt;PermissionDTO&gt; updatePermission(
             @PathVariable Long id,
             @Valid @RequestBody PermissionDTO permissionDTO) {
-<span class="nc" id="L50">        return ResponseEntity.ok(permissionService.updatePermission(id, permissionDTO));</span>
+<span class="fc" id="L50">        return ResponseEntity.ok(permissionService.updatePermission(id, permissionDTO));</span>
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
     @Operation(summary = &quot;Delete a permission&quot;)
     public ResponseEntity&lt;Void&gt; deletePermission(@PathVariable Long id) {
-<span class="nc" id="L56">        permissionService.deletePermission(id);</span>
-<span class="nc" id="L57">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L56">        permissionService.deletePermission(id);</span>
+<span class="fc" id="L57">        return ResponseEntity.noContent().build();</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

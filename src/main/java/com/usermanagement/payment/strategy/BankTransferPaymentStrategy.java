@@ -32,9 +32,20 @@ public class BankTransferPaymentStrategy implements PaymentStrategy {
             Thread.sleep(600);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new PaymentResult(null, PaymentStatus.FAILED.name(), "Interrupted");
+            return PaymentResult.builder()
+                .orderId(request.getOrderId())
+                .amount(request.getAmount().doubleValue())
+                .status(PaymentStatus.FAILED.name())
+                .message("Interrupted")
+                .build();
         }
-        return new PaymentResult("txn-bt-" + request.getOrderId(), PaymentStatus.PENDING.name(), "Processing");
+        return PaymentResult.builder()
+            .orderId(request.getOrderId())
+            .amount(request.getAmount().doubleValue())
+            .transactionId("txn-bt-" + request.getOrderId())
+            .status(PaymentStatus.PENDING.name())
+            .message("Processing")
+            .build();
     }
 
     @Override

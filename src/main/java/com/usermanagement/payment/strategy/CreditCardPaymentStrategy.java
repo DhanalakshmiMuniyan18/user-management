@@ -35,9 +35,20 @@ public class CreditCardPaymentStrategy implements PaymentStrategy {
             Thread.sleep(500); // Simulate processing delay
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new PaymentResult(null, PaymentStatus.FAILED.name(), "Interrupted");
+            return PaymentResult.builder()
+                .orderId(request.getOrderId())
+                .amount(request.getAmount().doubleValue())
+                .status(PaymentStatus.FAILED.name())
+                .message("Interrupted")
+                .build();
         }
-        return new PaymentResult("txn-cc-" + request.getOrderId(), PaymentStatus.PENDING.name(), "Processing");
+        return PaymentResult.builder()
+            .orderId(request.getOrderId())
+            .amount(request.getAmount().doubleValue())
+            .transactionId("txn-cc-" + request.getOrderId())
+            .status(PaymentStatus.PENDING.name())
+            .message("Processing")
+            .build();
     }
 
     @Override

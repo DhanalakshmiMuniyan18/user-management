@@ -26,9 +26,14 @@ public class PaymentContext {
      * @return the payment result
      */
     public PaymentResult execute(PaymentRequest request) {
-        PaymentStrategy strategy = factory.getStrategy(request.getPaymentType());
+        PaymentStrategy strategy = factory.getStrategy(request.getPaymentMethod());
         if (!strategy.validate(request)) {
-            return new PaymentResult(null, "REJECTED", "Validation failed");
+            return PaymentResult.builder()
+                .orderId(request.getOrderId())
+                .amount(request.getAmount().doubleValue())
+                .status("REJECTED")
+                .message("Validation failed")
+                .build();
         }
         return strategy.processPayment(request);
     }

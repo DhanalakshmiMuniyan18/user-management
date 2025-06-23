@@ -9,5 +9,7 @@ public enum PaymentStatus {
     SUCCESS,
     FAILED,
     REJECTED,
-    FRAUD_SUSPECTED
+    FRAUD_SUSPECTED,
+    CANCELLED,
+    REFUNDED
 } 

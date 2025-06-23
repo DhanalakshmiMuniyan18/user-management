@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 <span class="pc bpc" id="L12" title="45 of 46 branches missed.">@Data</span>
 public class PermissionDto {
     
-<span class="nc" id="L15">    private Long id;</span>
+<span class="fc" id="L15">    private Long id;</span>
     
     @NotBlank(message = &quot;Permission name is required&quot;)
     @Size(min = 3, max = 50, message = &quot;Permission name must be between 3 and 50 characters&quot;)
-<span class="nc" id="L19">    private String name;</span>
+<span class="fc" id="L19">    private String name;</span>
     
     @Size(max = 255, message = &quot;Description cannot exceed 255 characters&quot;)
-<span class="nc" id="L22">    private String description;</span>
+<span class="fc" id="L22">    private String description;</span>
     
 <span class="nc" id="L24">    private LocalDateTime createdAt;</span>
 <span class="nc" id="L25">    private LocalDateTime updatedAt;</span>

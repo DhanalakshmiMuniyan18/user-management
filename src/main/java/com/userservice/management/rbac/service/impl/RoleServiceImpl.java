@@ -30,6 +30,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO createRole(RoleDTO roleDTO) {
+        if (roleDTO.getName() == null || roleDTO.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Role name is required");
+        }
         if (roleRepository.existsByName(roleDTO.getName())) {
             throw new DuplicateResourceException("Role", "name", roleDTO.getName());
         }

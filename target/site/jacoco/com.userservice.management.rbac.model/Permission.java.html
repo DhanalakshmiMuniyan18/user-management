@@ -16,8 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = &quot;permissions&quot;)
 @Getter
-<span class="nc" id="L19">@Setter</span>
-<span class="nc" id="L20">@NoArgsConstructor</span>
+<span class="pc" id="L19">@Setter</span>
+<span class="fc" id="L20">@NoArgsConstructor</span>
 <span class="fc" id="L21">@AllArgsConstructor</span>
 <span class="pc bpc" id="L22" title="1 of 2 branches missed.">@Builder</span>
 public class Permission {
@@ -26,10 +26,10 @@ public class Permission {
 <span class="fc" id="L26">    private Long id;</span>
 
     @Column(nullable = false, unique = true)
-<span class="nc" id="L29">    private String name;</span>
+<span class="fc" id="L29">    private String name;</span>
 
     @Column
-<span class="nc" id="L32">    private String description;</span>
+<span class="fc" id="L32">    private String description;</span>
 
     @CreationTimestamp
     @Column(name = &quot;created_at&quot;, nullable = false, updatable = false)
@@ -41,6 +41,6 @@ public class Permission {
 
     @ManyToMany(mappedBy = &quot;permissions&quot;)
     @Builder.Default
-<span class="nc" id="L44">    private Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L44">    private Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
