@@ -34,7 +34,7 @@ public class AuditLog {
     private String action;
 
     @CreatedDate
-    @Column(name = "timestamp", nullable = false, updatable = false)
+    @Column(name = "timestamp", nullable = false, updatable = false, columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private LocalDateTime timestamp;
 
     @Column(columnDefinition = "TEXT")
@@ -46,10 +46,11 @@ public class AuditLog {
         log.setUser(user);
         log.setAction(action);
         log.setDetails(details);
+        log.setTimestamp(LocalDateTime.now());
         return log;
     }
 
-    public void setCreatedAt(java.time.LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.timestamp = createdAt;
     }
 } 

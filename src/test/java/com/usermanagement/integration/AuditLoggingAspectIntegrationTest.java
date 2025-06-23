@@ -3,10 +3,13 @@ package com.usermanagement.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usermanagement.dto.UserDto;
 import com.usermanagement.model.entity.AuditLog;
+import com.usermanagement.model.entity.Role;
 import com.usermanagement.model.entity.User;
 import com.usermanagement.model.entity.User.UserStatus;
 import com.usermanagement.repository.AuditLogRepository;
+import com.usermanagement.repository.RoleRepository;
 import com.usermanagement.repository.UserRepository;
+import com.usermanagement.security.JwtUtil;
 import com.usermanagement.security.UserPrincipal;
 import com.usermanagement.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,22 +44,42 @@ class AuditLoggingAspectIntegrationTest extends IntegrationTestConfig {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private AuditLogRepository auditLogRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private User adminUser;
+    private Role adminRole;
+    private String jwtToken;
 
     @BeforeEach
     void setUp() {
         auditLogRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        // Create admin role
+        adminRole = new Role();
+        adminRole.setName("ADMIN");
+        adminRole = roleRepository.save(adminRole);
+
+        // Create admin user with ADMIN role
         adminUser = new User();
         adminUser.setName("Admin");
         adminUser.setEmail("admin@example.com");
         adminUser.setPassword(passwordEncoder.encode("adminpass"));
         adminUser.setStatus(UserStatus.ACTIVE);
-        userRepository.save(adminUser);
+        Set<Role> roles = new HashSet<>();
+        roles.add(adminRole);
+        adminUser.setRoles(roles);
+        adminUser = userRepository.save(adminUser);
+        
+        // Generate JWT token for admin
+        jwtToken = jwtUtil.generateToken(adminUser.getEmail());
         
         UserPrincipal principal = UserPrincipal.fromUser(adminUser);
         SecurityContextHolder.getContext().setAuthentication(
@@ -70,10 +95,9 @@ class AuditLoggingAspectIntegrationTest extends IntegrationTestConfig {
         newUserDto.setEmail("testuser@example.com");
         newUserDto.setPassword("password");
 
-        System.out.println("Serialized UserDto: " + objectMapper.writeValueAsString(newUserDto));
-
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + jwtToken)
                         .content(objectMapper.writeValueAsString(newUserDto)))
                 .andExpect(status().isCreated());
 

@@ -7,6 +7,7 @@ com/usermanagement/repository/AuditLogRepositoryTest.class
 com/usermanagement/config/TestConfig.class
 com/usermanagement/repository/RoleRepositoryTest.class
 com/usermanagement/controller/RoleControllerTest.class
+com/userservice/management/rbac/service/RoleServiceTest.class
 com/usermanagement/integration/IntegrationTestConfig.class
 com/usermanagement/repository/PermissionRepositoryTest.class
 com/usermanagement/integration/IntegrationTestConfig$TestAuditingConfig.class

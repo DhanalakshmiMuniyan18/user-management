@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PermissionMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.mapper</a> &gt; <span class="el_source">PermissionMapperImpl.java</span></div><h1>PermissionMapperImpl.java</h1><pre class="source lang-java linenums">package com.usermanagement.mapper;
+
+import com.usermanagement.dto.PermissionDto;
+import com.usermanagement.model.entity.Permission;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-06-23T15:41:31+0530&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.7 (Ubuntu)&quot;
+)
+@Component
+<span class="fc" id="L14">public class PermissionMapperImpl implements PermissionMapper {</span>
+
+    @Override
+    public PermissionDto toDto(Permission permission) {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if ( permission == null ) {</span>
+<span class="nc" id="L19">            return null;</span>
+        }
+
+<span class="nc" id="L22">        PermissionDto permissionDto = new PermissionDto();</span>
+
+<span class="nc" id="L24">        permissionDto.setId( permission.getId() );</span>
+<span class="nc" id="L25">        permissionDto.setName( permission.getName() );</span>
+<span class="nc" id="L26">        permissionDto.setDescription( permission.getDescription() );</span>
+
+<span class="nc" id="L28">        return permissionDto;</span>
+    }
+
+    @Override
+    public Permission toEntity(PermissionDto permissionDto) {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if ( permissionDto == null ) {</span>
+<span class="nc" id="L34">            return null;</span>
+        }
+
+<span class="nc" id="L37">        Permission permission = new Permission();</span>
+
+<span class="nc" id="L39">        permission.setId( permissionDto.getId() );</span>
+<span class="nc" id="L40">        permission.setName( permissionDto.getName() );</span>
+<span class="nc" id="L41">        permission.setDescription( permissionDto.getDescription() );</span>
+
+<span class="nc" id="L43">        return permission;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

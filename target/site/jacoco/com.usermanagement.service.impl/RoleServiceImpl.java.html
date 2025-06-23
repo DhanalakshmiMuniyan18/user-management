@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RoleServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.service.impl</a> &gt; <span class="el_source">RoleServiceImpl.java</span></div><h1>RoleServiceImpl.java</h1><pre class="source lang-java linenums">package com.usermanagement.service.impl;
+
+import com.usermanagement.dto.RoleDto;
+import com.usermanagement.exception.ResourceNotFoundException;
+import com.usermanagement.mapper.RoleMapper;
+import com.usermanagement.model.entity.Permission;
+import com.usermanagement.model.entity.Role;
+import com.usermanagement.repository.PermissionRepository;
+import com.usermanagement.repository.RoleRepository;
+import com.usermanagement.service.RoleService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+/**
+ * @author Saravanamuthukumar S
+ */
+<span class="fc" id="L27">@Slf4j</span>
+@Service
+<span class="fc" id="L29">@RequiredArgsConstructor</span>
+@Transactional
+public class RoleServiceImpl implements RoleService {
+
+    private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
+    private final RoleMapper roleMapper;
+
+    @Override
+    public RoleDto createRole(RoleDto roleDto) {
+<span class="nc" id="L39">        log.info(&quot;Creating role: {}&quot;, roleDto.name());</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (roleRepository.existsByName(roleDto.name())) {</span>
+<span class="nc" id="L41">            log.warn(&quot;Role name already exists: {}&quot;, roleDto.name());</span>
+<span class="nc" id="L42">            throw new IllegalArgumentException(&quot;Role name already exists&quot;);</span>
+        }
+<span class="nc" id="L44">        Role role = roleMapper.toEntity(roleDto);</span>
+<span class="nc bnc" id="L45" title="All 4 branches missed.">        if (roleDto.permissions() != null &amp;&amp; !roleDto.permissions().isEmpty()) {</span>
+<span class="nc" id="L46">            Set&lt;Permission&gt; permissions = permissionRepository.findByNameIn(roleDto.permissions());</span>
+<span class="nc" id="L47">            role.setPermissions(permissions);</span>
+        }
+<span class="nc" id="L49">        Role savedRole = roleRepository.save(role);</span>
+<span class="nc" id="L50">        log.info(&quot;Role created: {}&quot;, savedRole.getId());</span>
+<span class="nc" id="L51">        return roleMapper.toDto(savedRole);</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#id&quot;)
+    public RoleDto getRoleById(Long id) {
+<span class="nc" id="L58">        log.info(&quot;Fetching role by id: {}&quot;, id);</span>
+<span class="nc" id="L59">        return roleRepository.findById(id)</span>
+<span class="nc" id="L60">                .map(roleMapper::toDto)</span>
+<span class="nc" id="L61">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with id: &quot; + id));</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#name&quot;)
+    public RoleDto getRoleByName(String name) {
+<span class="nc" id="L68">        log.info(&quot;Fetching role by name: {}&quot;, name);</span>
+<span class="nc" id="L69">        return roleRepository.findByName(name)</span>
+<span class="nc" id="L70">                .map(roleMapper::toDto)</span>
+<span class="nc" id="L71">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with name: &quot; + name));</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#search + '-' + #pageable.pageNumber + '-' + #pageable.pageSize&quot;)
+    public Page&lt;RoleDto&gt; getAllRoles(String search, Pageable pageable) {
+<span class="nc" id="L78">        log.info(&quot;Listing roles with search: {}&quot;, search);</span>
+<span class="nc" id="L79">        return roleRepository.findBySearchCriteria(search, pageable)</span>
+<span class="nc" id="L80">                .map(roleMapper::toDto);</span>
+    }
+
+    @Override
+    public RoleDto updateRole(Long id, RoleDto roleDto) {
+<span class="nc" id="L85">        log.info(&quot;Updating role: {}&quot;, id);</span>
+<span class="nc" id="L86">        Role existingRole = roleRepository.findById(id)</span>
+<span class="nc" id="L87">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with id: &quot; + id));</span>
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (!existingRole.getName().equals(roleDto.name()) &amp;&amp; roleRepository.existsByName(roleDto.name())) {</span>
+<span class="nc" id="L89">            log.warn(&quot;Role name already exists: {}&quot;, roleDto.name());</span>
+<span class="nc" id="L90">            throw new IllegalArgumentException(&quot;Role name already exists&quot;);</span>
+        }
+<span class="nc" id="L92">        existingRole.setName(roleDto.name());</span>
+<span class="nc" id="L93">        existingRole.setDescription(roleDto.description());</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (roleDto.permissions() != null) {</span>
+<span class="nc" id="L95">            Set&lt;Permission&gt; permissions = permissionRepository.findByNameIn(roleDto.permissions());</span>
+<span class="nc" id="L96">            existingRole.setPermissions(permissions);</span>
+        }
+<span class="nc" id="L98">        Role updatedRole = roleRepository.save(existingRole);</span>
+<span class="nc" id="L99">        log.info(&quot;Role updated: {}&quot;, updatedRole.getId());</span>
+<span class="nc" id="L100">        return roleMapper.toDto(updatedRole);</span>
+    }
+
+    @Override
+    public void deleteRole(Long id) {
+<span class="nc" id="L105">        log.info(&quot;Deleting role: {}&quot;, id);</span>
+<span class="nc" id="L106">        Role role = roleRepository.findById(id)</span>
+<span class="nc" id="L107">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with id: &quot; + id));</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (!role.getUsers().isEmpty()) {</span>
+<span class="nc" id="L109">            log.warn(&quot;Cannot delete role {} as it is assigned to users&quot;, id);</span>
+<span class="nc" id="L110">            throw new IllegalStateException(&quot;Cannot delete role as it is assigned to users&quot;);</span>
+        }
+<span class="nc" id="L112">        roleRepository.delete(role);</span>
+<span class="nc" id="L113">        log.info(&quot;Role deleted: {}&quot;, id);</span>
+<span class="nc" id="L114">    }</span>
+
+    @Override
+    public RoleDto addPermissionsToRole(Long roleId, Set&lt;String&gt; permissionNames) {
+<span class="nc" id="L118">        log.info(&quot;Adding permissions to role: {}&quot;, roleId);</span>
+<span class="nc" id="L119">        Role role = roleRepository.findById(roleId)</span>
+<span class="nc" id="L120">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with id: &quot; + roleId));</span>
+<span class="nc" id="L121">        Set&lt;Permission&gt; permissionEntities = permissionRepository.findByNameIn(permissionNames);</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (permissionEntities.size() != permissionNames.size()) {</span>
+<span class="nc" id="L123">            Set&lt;String&gt; foundPermissions = permissionEntities.stream()</span>
+<span class="nc" id="L124">                .map(Permission::getName)</span>
+<span class="nc" id="L125">                .collect(Collectors.toSet());</span>
+<span class="nc" id="L126">            Set&lt;String&gt; notFound = permissionNames.stream()</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                .filter(name -&gt; !foundPermissions.contains(name))</span>
+<span class="nc" id="L128">                .collect(Collectors.toSet());</span>
+<span class="nc" id="L129">            log.warn(&quot;Permissions not found: {}&quot;, notFound);</span>
+<span class="nc" id="L130">            throw new ResourceNotFoundException(&quot;Permissions not found: &quot; + notFound);</span>
+        }
+<span class="nc" id="L132">        role.getPermissions().addAll(permissionEntities);</span>
+<span class="nc" id="L133">        Role updatedRole = roleRepository.save(role);</span>
+<span class="nc" id="L134">        log.info(&quot;Permissions added to role: {}&quot;, roleId);</span>
+<span class="nc" id="L135">        return roleMapper.toDto(updatedRole);</span>
+    }
+
+    @Override
+    public RoleDto removePermissionsFromRole(Long roleId, Set&lt;String&gt; permissionNames) {
+<span class="nc" id="L140">        log.info(&quot;Removing permissions from role: {}&quot;, roleId);</span>
+<span class="nc" id="L141">        Role role = roleRepository.findById(roleId)</span>
+<span class="nc" id="L142">            .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Role not found with id: &quot; + roleId));</span>
+<span class="nc" id="L143">        Set&lt;Permission&gt; permissionEntities = permissionRepository.findByNameIn(permissionNames);</span>
+<span class="nc" id="L144">        role.getPermissions().removeAll(permissionEntities);</span>
+<span class="nc" id="L145">        Role updatedRole = roleRepository.save(role);</span>
+<span class="nc" id="L146">        log.info(&quot;Permissions removed from role: {}&quot;, roleId);</span>
+<span class="nc" id="L147">        return roleMapper.toDto(updatedRole);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

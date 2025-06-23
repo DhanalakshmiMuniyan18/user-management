@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObserverMetrics.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.observer.metrics</a> &gt; <span class="el_source">ObserverMetrics.java</span></div><h1>ObserverMetrics.java</h1><pre class="source lang-java linenums">/**
+ * Utility for recording observer notification metrics.
+ * @author Saravanamuthukumar S
+ */
+package com.usermanagement.observer.metrics;
+
+import com.usermanagement.observer.core.Observer;
+import com.usermanagement.observer.core.Event;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ObserverMetrics {
+<span class="fc" id="L17">    private static final Logger logger = LoggerFactory.getLogger(ObserverMetrics.class);</span>
+    private static MeterRegistry meterRegistry;
+
+    @Autowired
+<span class="fc" id="L21">    public ObserverMetrics(MeterRegistry meterRegistry) {</span>
+<span class="fc" id="L22">        ObserverMetrics.meterRegistry = meterRegistry;</span>
+<span class="fc" id="L23">    }</span>
+
+    public static void recordSuccess(Observer&lt;?&gt; observer, Event event) {
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (meterRegistry != null) {</span>
+<span class="nc" id="L27">            meterRegistry.counter(&quot;observer.success&quot;, &quot;observer&quot;, observer.getClass().getSimpleName()).increment();</span>
+        }
+<span class="nc" id="L29">        logger.debug(&quot;Observer {} successfully handled event {}&quot;, observer.getClass().getSimpleName(), event.getEventId());</span>
+<span class="nc" id="L30">    }</span>
+
+    public static void recordFailure(Observer&lt;?&gt; observer, Event event, Exception ex) {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (meterRegistry != null) {</span>
+<span class="nc" id="L34">            meterRegistry.counter(&quot;observer.failure&quot;, &quot;observer&quot;, observer.getClass().getSimpleName()).increment();</span>
+        }
+<span class="nc" id="L36">        logger.warn(&quot;Observer {} failed to handle event {}: {}&quot;, observer.getClass().getSimpleName(), event.getEventId(), ex.getMessage());</span>
+<span class="nc" id="L37">    }</span>
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

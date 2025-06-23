@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccessRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.model.entity</a> &gt; <span class="el_source">AccessRequest.java</span></div><h1>AccessRequest.java</h1><pre class="source lang-java linenums">package com.usermanagement.model.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
+
+/**
+ * @author Saravanamuthukumar S
+ */
+@Entity
+@Table(name = &quot;access_requests&quot;)
+@Getter
+<span class="pc" id="L17">@Setter</span>
+<span class="fc" id="L18">@NoArgsConstructor</span>
+<span class="nc" id="L19">@AllArgsConstructor</span>
+<span class="nc" id="L20">@Builder</span>
+public class AccessRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L24">    private Long id;</span>
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+<span class="fc" id="L28">    private User user;</span>
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;role_id&quot;, nullable = false)
+<span class="fc" id="L32">    private Role role;</span>
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+<span class="fc" id="L36">    private Status status;</span>
+
+    @Column(length = 255)
+<span class="nc" id="L39">    private String reason;</span>
+
+    @Column(length = 255)
+<span class="nc" id="L42">    private String responseMessage;</span>
+
+    @Column(nullable = false, updatable = false)
+<span class="nc" id="L45">    private LocalDateTime createdAt;</span>
+
+    @Column(nullable = false)
+<span class="nc" id="L48">    private LocalDateTime updatedAt;</span>
+
+    @PrePersist
+    protected void onCreate() {
+<span class="fc" id="L52">        this.createdAt = this.updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L53">    }</span>
+
+    @PreUpdate
+    protected void onUpdate() {
+<span class="nc" id="L57">        this.updatedAt = LocalDateTime.now();</span>
+<span class="nc" id="L58">    }</span>
+
+<span class="fc" id="L60">    public enum Status {</span>
+<span class="fc" id="L61">        PENDING,</span>
+<span class="fc" id="L62">        APPROVED,</span>
+<span class="fc" id="L63">        REJECTED</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

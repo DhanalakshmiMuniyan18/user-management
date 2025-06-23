@@ -3,6 +3,7 @@ package com.usermanagement.repository;
 import com.usermanagement.model.entity.Permission;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Saravanamuthukumar S
  */
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class PermissionRepositoryTest {
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PermissionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.userservice.management.rbac.controller</a> &gt; <span class="el_source">PermissionController.java</span></div><h1>PermissionController.java</h1><pre class="source lang-java linenums">package com.userservice.management.rbac.controller;
+
+import com.userservice.management.rbac.dto.PermissionDTO;
+import com.userservice.management.rbac.service.PermissionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for managing permissions.
+ * @author Saravanamuthukumar S
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/permissions&quot;)
+<span class="nc" id="L21">@RequiredArgsConstructor</span>
+@Tag(name = &quot;Permission Management&quot;, description = &quot;APIs for managing permissions&quot;)
+public class PermissionController {
+
+    private final PermissionService permissionService;
+
+    @PostMapping
+    @Operation(summary = &quot;Create a new permission&quot;)
+    public ResponseEntity&lt;PermissionDTO&gt; createPermission(@Valid @RequestBody PermissionDTO permissionDTO) {
+<span class="nc" id="L30">        return new ResponseEntity&lt;&gt;(permissionService.createPermission(permissionDTO), HttpStatus.CREATED);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Get a permission by ID&quot;)
+    public ResponseEntity&lt;PermissionDTO&gt; getPermission(@PathVariable Long id) {
+<span class="nc" id="L36">        return ResponseEntity.ok(permissionService.getPermission(id));</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Get all permissions&quot;)
+    public ResponseEntity&lt;List&lt;PermissionDTO&gt;&gt; getAllPermissions() {
+<span class="nc" id="L42">        return ResponseEntity.ok(permissionService.getAllPermissions());</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Update a permission&quot;)
+    public ResponseEntity&lt;PermissionDTO&gt; updatePermission(
+            @PathVariable Long id,
+            @Valid @RequestBody PermissionDTO permissionDTO) {
+<span class="nc" id="L50">        return ResponseEntity.ok(permissionService.updatePermission(id, permissionDTO));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Delete a permission&quot;)
+    public ResponseEntity&lt;Void&gt; deletePermission(@PathVariable Long id) {
+<span class="nc" id="L56">        permissionService.deletePermission(id);</span>
+<span class="nc" id="L57">        return ResponseEntity.noContent().build();</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentContext.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.payment.context</a> &gt; <span class="el_source">PaymentContext.java</span></div><h1>PaymentContext.java</h1><pre class="source lang-java linenums">/**
+ * Context for executing payment strategies.
+ * @author Saravanamuthukumar S
+ */
+package com.usermanagement.payment.context;
+
+import com.usermanagement.dto.PaymentRequest;
+import com.usermanagement.dto.PaymentResult;
+import com.usermanagement.payment.factory.PaymentStrategyFactory;
+import com.usermanagement.payment.strategy.PaymentStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PaymentContext {
+    private final PaymentStrategyFactory factory;
+
+    @Autowired
+<span class="fc" id="L19">    public PaymentContext(PaymentStrategyFactory factory) {</span>
+<span class="fc" id="L20">        this.factory = factory;</span>
+<span class="fc" id="L21">    }</span>
+
+    /**
+     * Executes the payment using the appropriate strategy.
+     * @param request the payment request
+     * @return the payment result
+     */
+    public PaymentResult execute(PaymentRequest request) {
+<span class="nc" id="L29">        PaymentStrategy strategy = factory.getStrategy(request.getPaymentType());</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (!strategy.validate(request)) {</span>
+<span class="nc" id="L31">            return new PaymentResult(null, &quot;REJECTED&quot;, &quot;Validation failed&quot;);</span>
+        }
+<span class="nc" id="L33">        return strategy.processPayment(request);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

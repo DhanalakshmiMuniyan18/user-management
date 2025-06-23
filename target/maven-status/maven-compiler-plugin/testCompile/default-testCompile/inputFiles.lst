@@ -1,6 +1,7 @@
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/controller/AuditLogControllerTest.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/controller/PermissionControllerTest.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/integration/AuthIntegrationTest.java
+/home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/userservice/management/rbac/service/RoleServiceTest.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/controller/AccessRequestControllerTest.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/controller/RoleControllerTest.java
 /home/dhanalakshmi/Documents/cursor/User_Management/src/test/java/com/usermanagement/repository/RoleRepositoryTest.java

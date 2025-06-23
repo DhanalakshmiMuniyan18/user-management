@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.dto</a> &gt; <span class="el_source">UserDto.java</span></div><h1>UserDto.java</h1><pre class="source lang-java linenums">package com.usermanagement.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.usermanagement.model.entity.User.UserStatus;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
+
+/**
+ * @author Saravanamuthukumar S
+ */
+<span class="fc" id="L18">public class UserDto {</span>
+    
+    private Long id;
+    
+    @NotBlank(message = &quot;Name is required&quot;)
+    private String name;
+    
+    @NotBlank(message = &quot;Email is required&quot;)
+    @Email(message = &quot;Invalid email format&quot;)
+    private String email;
+    
+    @NotBlank(message = &quot;Password is required&quot;)
+    private String password;
+    
+    private UserStatus status;
+    private LocalDateTime lastLogin;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Set&lt;String&gt; roleNames;
+
+<span class="fc" id="L38">    public Long getId() { return id; }</span>
+<span class="fc" id="L39">    public void setId(Long id) { this.id = id; }</span>
+
+<span class="fc" id="L41">    public String getName() { return name; }</span>
+<span class="fc" id="L42">    public void setName(String name) { this.name = name; }</span>
+
+<span class="fc" id="L44">    public String getEmail() { return email; }</span>
+<span class="fc" id="L45">    public void setEmail(String email) { this.email = email; }</span>
+
+<span class="fc" id="L47">    public String getPassword() { return password; }</span>
+<span class="fc" id="L48">    public void setPassword(String password) { this.password = password; }</span>
+
+<span class="fc" id="L50">    public UserStatus getStatus() { return status; }</span>
+<span class="fc" id="L51">    public void setStatus(UserStatus status) { this.status = status; }</span>
+
+<span class="fc" id="L53">    public LocalDateTime getLastLogin() { return lastLogin; }</span>
+<span class="fc" id="L54">    public void setLastLogin(LocalDateTime lastLogin) { this.lastLogin = lastLogin; }</span>
+
+<span class="fc" id="L56">    public LocalDateTime getCreatedAt() { return createdAt; }</span>
+<span class="fc" id="L57">    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }</span>
+
+<span class="fc" id="L59">    public LocalDateTime getUpdatedAt() { return updatedAt; }</span>
+<span class="fc" id="L60">    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }</span>
+
+<span class="fc" id="L62">    public Set&lt;String&gt; getRoleNames() { return roleNames; }</span>
+<span class="fc" id="L63">    public void setRoleNames(Set&lt;String&gt; roleNames) { this.roleNames = roleNames; }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (this == o) return true;</span>
+<span class="nc bnc" id="L68" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="nc" id="L69">        UserDto userDto = (UserDto) o;</span>
+<span class="nc" id="L70">        return Objects.equals(id, userDto.id);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L75">        return Objects.hash(id);</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

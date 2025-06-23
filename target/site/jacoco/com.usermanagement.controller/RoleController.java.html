@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RoleController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.controller</a> &gt; <span class="el_source">RoleController.java</span></div><h1>RoleController.java</h1><pre class="source lang-java linenums">package com.usermanagement.controller;
+
+import com.usermanagement.dto.RoleDto;
+import com.usermanagement.dto.StandardResponse;
+import com.usermanagement.service.RoleService;
+import io.micrometer.core.annotation.Timed;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * REST controller for role management.
+ * &lt;p&gt;
+ * All endpoints are secured and audited.
+ * &lt;/p&gt;
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/roles&quot;)
+<span class="fc" id="L34">@RequiredArgsConstructor</span>
+@Tag(name = &quot;Roles&quot;, description = &quot;Role management endpoints&quot;)
+<span class="fc" id="L36">@Slf4j</span>
+public class RoleController {
+
+    private final RoleService roleService;
+
+    @PostMapping
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    @Operation(summary = &quot;Create a new role&quot;, responses = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Role created successfully&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input&quot;),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Role name already exists&quot;)
+    })
+    @Timed(value = &quot;role.create&quot;, description = &quot;Time taken to create a role&quot;)
+    public CompletableFuture&lt;ResponseEntity&lt;StandardResponse&lt;RoleDto&gt;&gt;&gt; createRole(
+            @Valid @RequestBody RoleDto roleDto) {
+<span class="nc" id="L51">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="nc" id="L52">        MDC.put(&quot;correlationId&quot;, correlationId);</span>
+<span class="nc" id="L53">        log.info(&quot;Creating role: {}&quot;, roleDto.name());</span>
+<span class="nc" id="L54">        return CompletableFuture.supplyAsync(() -&gt; {</span>
+<span class="nc" id="L55">            RoleDto createdRole = roleService.createRole(roleDto);</span>
+<span class="nc" id="L56">            log.info(&quot;Role created: {}&quot;, createdRole.name());</span>
+<span class="nc" id="L57">            return ResponseEntity.status(201)</span>
+<span class="nc" id="L58">                    .body(StandardResponse.success(createdRole, correlationId));</span>
+<span class="nc" id="L59">        }).whenComplete((r, t) -&gt; MDC.clear());</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')&quot;)
+    @Operation(summary = &quot;Get role by ID&quot;, responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Role found&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role not found&quot;)
+    })
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#id&quot;)
+    public ResponseEntity&lt;StandardResponse&lt;RoleDto&gt;&gt; getRoleById(
+            @Parameter(description = &quot;Role ID&quot;, required = true)
+            @PathVariable Long id) {
+<span class="nc" id="L72">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="nc" id="L73">        MDC.put(&quot;correlationId&quot;, correlationId);</span>
+<span class="nc" id="L74">        log.info(&quot;Fetching role by ID: {}&quot;, id);</span>
+<span class="nc" id="L75">        RoleDto role = roleService.getRoleById(id);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok(StandardResponse.success(role, correlationId));</span>
+    }
+
+    @GetMapping(&quot;/name/{name}&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')&quot;)
+    @Operation(summary = &quot;Get role by name&quot;, responses = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Role found&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role not found&quot;)
+    })
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#name&quot;)
+    public ResponseEntity&lt;StandardResponse&lt;RoleDto&gt;&gt; getRoleByName(
+            @Parameter(description = &quot;Role name&quot;, required = true)
+            @PathVariable String name) {
+<span class="nc" id="L89">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="nc" id="L90">        MDC.put(&quot;correlationId&quot;, correlationId);</span>
+<span class="nc" id="L91">        log.info(&quot;Fetching role by name: {}&quot;, name);</span>
+<span class="nc" id="L92">        RoleDto role = roleService.getRoleByName(name);</span>
+<span class="nc" id="L93">        return ResponseEntity.ok(StandardResponse.success(role, correlationId));</span>
+    }
+
+    @GetMapping
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')&quot;)
+    @Operation(summary = &quot;List roles with filtering and pagination&quot;)
+    @Cacheable(value = &quot;roles&quot;, key = &quot;#search + '-' + #pageable.pageNumber&quot;)
+    public ResponseEntity&lt;StandardResponse&lt;Page&lt;RoleDto&gt;&gt;&gt; getAllRoles(
+            @Parameter(description = &quot;Search by name or description&quot;)
+            @RequestParam(required = false) String search,
+            @Parameter(description = &quot;Pagination parameters&quot;)
+            Pageable pageable) {
+<span class="fc" id="L105">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="fc" id="L106">        MDC.put(&quot;correlationId&quot;, correlationId);</span>
+<span class="fc" id="L107">        log.info(&quot;Listing roles with search: {}&quot;, search);</span>
+<span class="fc" id="L108">        Page&lt;RoleDto&gt; roles = roleService.getAllRoles(search, pageable);</span>
+<span class="fc" id="L109">        return ResponseEntity.ok(StandardResponse.success(roles, correlationId));</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Update role details&quot;, responses = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Role updated successfully&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role not found&quot;)
+    })
+    public ResponseEntity&lt;RoleDto&gt; updateRole(
+        @Parameter(description = &quot;Role ID&quot;, required = true)
+        @PathVariable Long id,
+        
+        @Valid @RequestBody RoleDto roleDto
+    ) {
+<span class="nc" id="L123">        return ResponseEntity.ok(roleService.updateRole(id, roleDto));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Delete role&quot;, responses = {
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Role deleted successfully&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role not found&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Role cannot be deleted&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; deleteRole(
+        @Parameter(description = &quot;Role ID&quot;, required = true)
+        @PathVariable Long id
+    ) {
+<span class="nc" id="L136">        roleService.deleteRole(id);</span>
+<span class="nc" id="L137">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @PostMapping(&quot;/{id}/permissions&quot;)
+    @Operation(summary = &quot;Add permissions to role&quot;, responses = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Permissions added successfully&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role or permissions not found&quot;)
+    })
+    public ResponseEntity&lt;RoleDto&gt; addPermissionsToRole(
+        @Parameter(description = &quot;Role ID&quot;, required = true)
+        @PathVariable Long id,
+        
+        @Parameter(description = &quot;Permission names to add&quot;, required = true)
+        @RequestBody Set&lt;String&gt; permissionNames
+    ) {
+<span class="nc" id="L152">        return ResponseEntity.ok(roleService.addPermissionsToRole(id, permissionNames));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}/permissions&quot;)
+    @Operation(summary = &quot;Remove permissions from role&quot;, responses = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Permissions removed successfully&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Role not found&quot;)
+    })
+    public ResponseEntity&lt;RoleDto&gt; removePermissionsFromRole(
+        @Parameter(description = &quot;Role ID&quot;, required = true)
+        @PathVariable Long id,
+        
+        @Parameter(description = &quot;Permission names to remove&quot;, required = true)
+        @RequestBody Set&lt;String&gt; permissionNames
+    ) {
+<span class="nc" id="L167">        return ResponseEntity.ok(roleService.removePermissionsFromRole(id, permissionNames));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

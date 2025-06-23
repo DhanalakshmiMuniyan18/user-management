@@ -1,0 +1,26 @@
+package com.userservice.management.rbac.repository;
+
+import com.userservice.management.rbac.model.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.Set;
+
+/**
+ * Repository interface for Role entity.
+ * @author Saravanamuthukumar S
+ */
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> findByName(String name);
+    boolean existsByName(String name);
+    
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions WHERE r.id = :id")
+    Optional<Role> findByIdWithPermissions(@Param("id") Long id);
+    
+    @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions WHERE r.id IN :ids")
+    Set<Role> findByIdInWithPermissions(@Param("ids") Set<Long> ids);
+} 

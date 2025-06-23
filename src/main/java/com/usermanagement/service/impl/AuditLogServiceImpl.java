@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Saravanamuthukumar S
  */
@@ -47,7 +49,9 @@ public class AuditLogServiceImpl implements AuditLogService {
     @Override
     @Transactional(readOnly = true)
     public Page<AuditLogDto> getAllLogs(String search, Pageable pageable) {
-        return auditLogRepository.findBySearchCriteria(search, pageable)
+        // Since we removed the generic search method, we'll use findAll for now
+        // You can implement a more specific search later if needed
+        return auditLogRepository.findAll(pageable)
             .map(auditLogMapper::toDto);
     }
 

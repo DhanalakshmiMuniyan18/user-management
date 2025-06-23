@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Management Service</a> &gt; <a href="index.source.html" class="el_package">com.usermanagement.model.entity</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.usermanagement.model.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * @author Saravanamuthukumar S
+ */
+@Entity
+@Table(name = &quot;users&quot;)
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+<span class="fc" id="L23">@Setter</span>
+<span class="fc" id="L24">public class User {</span>
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L28">    private Long id;</span>
+
+    @NotBlank
+    @Column(nullable = false)
+<span class="fc" id="L32">    private String name;</span>
+
+    @Email
+    @NotBlank
+    @Column(nullable = false, unique = true)
+<span class="fc" id="L37">    private String email;</span>
+
+<span class="fc" id="L39">    @Column(nullable = false)</span>
+    @Enumerated(EnumType.STRING)
+<span class="fc" id="L41">    private UserStatus status = UserStatus.ACTIVE;</span>
+
+    @Column(name = &quot;last_login&quot;)
+<span class="fc" id="L44">    private LocalDateTime lastLogin;</span>
+
+    @CreatedDate
+    @Column(name = &quot;created_at&quot;, nullable = false, updatable = false)
+<span class="fc" id="L48">    private LocalDateTime createdAt;</span>
+
+    @LastModifiedDate
+    @Column(name = &quot;updated_at&quot;, nullable = false)
+<span class="fc" id="L52">    private LocalDateTime updatedAt;</span>
+
+<span class="fc" id="L54">    @ManyToMany(fetch = FetchType.LAZY)</span>
+    @JoinTable(
+        name = &quot;user_roles&quot;,
+        joinColumns = @JoinColumn(name = &quot;user_id&quot;),
+        inverseJoinColumns = @JoinColumn(name = &quot;role_id&quot;)
+    )
+<span class="fc" id="L60">    private Set&lt;Role&gt; roles = new HashSet&lt;&gt;();</span>
+
+    @Column(nullable = false)
+    private String password;
+    
+<span class="fc" id="L65">    public enum UserStatus {</span>
+<span class="fc" id="L66">        ACTIVE,</span>
+<span class="fc" id="L67">        INACTIVE,</span>
+<span class="fc" id="L68">        SUSPENDED,</span>
+<span class="fc" id="L69">        DELETED</span>
+    }
+
+    public String getPassword() {
+<span class="fc" id="L73">        return this.password;</span>
+    }
+} 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

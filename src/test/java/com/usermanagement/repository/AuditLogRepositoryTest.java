@@ -5,6 +5,7 @@ import com.usermanagement.model.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Saravanamuthukumar S
  */
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 class AuditLogRepositoryTest {
 
@@ -32,6 +34,9 @@ class AuditLogRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        auditLogRepository.deleteAll();
+        userRepository.deleteAll();
+        
         testUser = new User();
         testUser.setName("Test User");
         testUser.setEmail("test@example.com");
@@ -44,7 +49,11 @@ class AuditLogRepositoryTest {
     @Test
     void shouldSaveAuditLog() {
         // Given
-        AuditLog log = AuditLog.of(testUser, "USER_LOGIN", "User logged in successfully");
+        AuditLog log = new AuditLog();
+        log.setUser(testUser);
+        log.setAction("USER_LOGIN");
+        log.setDetails("User logged in successfully");
+        log.setTimestamp(now);
 
         // When
         AuditLog savedLog = auditLogRepository.save(log);
@@ -54,13 +63,24 @@ class AuditLogRepositoryTest {
         assertThat(savedLog.getUser()).isEqualTo(testUser);
         assertThat(savedLog.getAction()).isEqualTo("USER_LOGIN");
         assertThat(savedLog.getDetails()).isEqualTo("User logged in successfully");
+        assertThat(savedLog.getTimestamp()).isNotNull();
     }
 
     @Test
     void shouldFindByUserId() {
         // Given
-        AuditLog log1 = AuditLog.of(testUser, "ACTION_1", "Details 1");
-        AuditLog log2 = AuditLog.of(testUser, "ACTION_2", "Details 2");
+        AuditLog log1 = new AuditLog();
+        log1.setUser(testUser);
+        log1.setAction("ACTION_1");
+        log1.setDetails("Details 1");
+        log1.setTimestamp(now);
+
+        AuditLog log2 = new AuditLog();
+        log2.setUser(testUser);
+        log2.setAction("ACTION_2");
+        log2.setDetails("Details 2");
+        log2.setTimestamp(now.plusHours(1));
+
         auditLogRepository.save(log1);
         auditLogRepository.save(log2);
 
@@ -76,9 +96,24 @@ class AuditLogRepositoryTest {
     @Test
     void shouldFindByAction() {
         // Given
-        AuditLog log1 = AuditLog.of(testUser, "LOGIN", "Login 1");
-        AuditLog log2 = AuditLog.of(testUser, "LOGIN", "Login 2");
-        AuditLog log3 = AuditLog.of(testUser, "LOGOUT", "Logout");
+        AuditLog log1 = new AuditLog();
+        log1.setUser(testUser);
+        log1.setAction("LOGIN");
+        log1.setDetails("Login 1");
+        log1.setTimestamp(now);
+
+        AuditLog log2 = new AuditLog();
+        log2.setUser(testUser);
+        log2.setAction("LOGIN");
+        log2.setDetails("Login 2");
+        log2.setTimestamp(now.plusMinutes(30));
+
+        AuditLog log3 = new AuditLog();
+        log3.setUser(testUser);
+        log3.setAction("LOGOUT");
+        log3.setDetails("Logout");
+        log3.setTimestamp(now.plusHours(1));
+
         auditLogRepository.saveAll(java.util.List.of(log1, log2, log3));
 
         // When
@@ -96,12 +131,22 @@ class AuditLogRepositoryTest {
         LocalDateTime yesterday = now.minusDays(1);
         LocalDateTime tomorrow = now.plusDays(1);
 
-        AuditLog log1 = AuditLog.of(testUser, "LOGIN", "Past login");
-        AuditLog log2 = AuditLog.of(testUser, "LOGOUT", "Recent logout");
+        AuditLog log1 = new AuditLog();
+        log1.setUser(testUser);
+        log1.setAction("LOGIN");
+        log1.setDetails("Past login");
+        log1.setTimestamp(now);
+
+        AuditLog log2 = new AuditLog();
+        log2.setUser(testUser);
+        log2.setAction("LOGOUT");
+        log2.setDetails("Recent logout");
+        log2.setTimestamp(now.plusHours(1));
+
         auditLogRepository.saveAll(java.util.List.of(log1, log2));
 
         // When
-        Page<AuditLog> filteredLogs = auditLogRepository.findBySearchCriteria(
+        Page<AuditLog> filteredLogs = auditLogRepository.findByUserIdAndActionAndTimestampBetween(
             testUser.getId(),
             "LOGIN",
             yesterday,
