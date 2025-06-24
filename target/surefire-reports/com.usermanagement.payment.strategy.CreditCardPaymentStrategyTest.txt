@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.usermanagement.payment.strategy.CreditCardPaymentStrategyTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.376 s - in com.usermanagement.payment.strategy.CreditCardPaymentStrategyTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.221 s - in com.usermanagement.payment.strategy.CreditCardPaymentStrategyTest
