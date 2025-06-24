@@ -61,10 +61,11 @@ User Management Service,com.usermanagement.payment.factory,PaymentStrategyFactor
 User Management Service,com.userservice.management.rbac.controller,RoleController,0,54,0,0,0,9,0,8,0,8
 User Management Service,com.userservice.management.rbac.controller,PermissionController,0,40,0,0,0,7,0,6,0,6
 User Management Service,com.usermanagement.controller,RoleController,106,31,0,0,24,7,9,3,9,3
-User Management Service,com.usermanagement.controller,AuthController,0,58,0,0,0,11,0,2,0,2
+User Management Service,com.usermanagement.controller,AuthController,13,58,0,0,4,12,0,3,0,3
 User Management Service,com.usermanagement.controller,AuthController.JwtResponse,61,13,14,0,0,2,10,3,3,3
 User Management Service,com.usermanagement.controller,AuditLogController,24,13,0,0,5,2,3,2,3,2
 User Management Service,com.usermanagement.controller,UserController,10,19,0,0,2,3,0,2,0,2
+User Management Service,com.usermanagement.controller,AuthController.ErrorResponse,61,13,14,0,0,2,10,3,3,3
 User Management Service,com.usermanagement.controller,AuthController.LoginRequest,92,23,22,0,0,3,14,6,3,6
 User Management Service,com.usermanagement.controller,PermissionController,37,13,0,0,7,2,5,2,5,2
 User Management Service,com.usermanagement.controller,AccessRequestController,38,14,0,0,7,2,5,2,5,2

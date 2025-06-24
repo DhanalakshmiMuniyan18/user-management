@@ -58,6 +58,7 @@ com/userservice/management/rbac/service/impl/RoleServiceImpl.class
 com/usermanagement/service/impl/RoleServiceImpl.class
 com/userservice/management/rbac/repository/PermissionRepository.class
 com/usermanagement/dto/PermissionDto.class
+com/usermanagement/controller/AuthController$ErrorResponse.class
 com/usermanagement/repository/AccessRequestRepository.class
 com/usermanagement/service/AccessRequestService.class
 com/userservice/management/rbac/model/Permission.class

@@ -13,49 +13,63 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Saravanamuthukumar S
  */
 @RestController
 @RequestMapping(&quot;/auth&quot;)
-<span class="fc" id="L22">@RequiredArgsConstructor</span>
+<span class="fc" id="L24">@RequiredArgsConstructor</span>
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+<span class="fc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);</span>
 
     @PostMapping(&quot;/login&quot;)
     public ResponseEntity&lt;?&gt; login(@RequestBody LoginRequest loginRequest) {
         try {
-<span class="fc" id="L32">            Authentication authentication = authenticationManager.authenticate(</span>
+<span class="fc" id="L35">            Authentication authentication = authenticationManager.authenticate(</span>
                 new UsernamePasswordAuthenticationToken(
-<span class="fc" id="L34">                    loginRequest.getEmail(),</span>
-<span class="fc" id="L35">                    loginRequest.getPassword()</span>
+<span class="fc" id="L37">                    loginRequest.getEmail(),</span>
+<span class="fc" id="L38">                    loginRequest.getPassword()</span>
                 )
             );
-<span class="fc" id="L38">            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();</span>
-<span class="fc" id="L39">            String token = jwtUtil.generateToken(userPrincipal.getUsername());</span>
-<span class="fc" id="L40">            return ResponseEntity.ok(new JwtResponse(token));</span>
-<span class="fc" id="L41">        } catch (Exception ex) {</span>
-<span class="fc" id="L42">            System.out.println(&quot;[DEBUG] Exception in /auth/login: &quot; + ex.getClass() + &quot;: &quot; + ex.getMessage());</span>
-<span class="fc" id="L43">            ex.printStackTrace(System.out);</span>
-<span class="fc" id="L44">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(&quot;Invalid credentials: &quot; + ex.getMessage());</span>
+<span class="fc" id="L41">            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();</span>
+<span class="fc" id="L42">            String token = jwtUtil.generateToken(userPrincipal.getUsername());</span>
+<span class="fc" id="L43">            return ResponseEntity.ok(new JwtResponse(token));</span>
+<span class="fc" id="L44">        } catch (AuthenticationException ex) {</span>
+            // Log the error securely (without exposing details in the response)
+<span class="fc" id="L46">            logger.error(&quot;Authentication failed for user: {}&quot;, loginRequest.getEmail(), ex);</span>
+<span class="fc" id="L47">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)</span>
+<span class="fc" id="L48">                .body(new ErrorResponse(&quot;Invalid email or password&quot;));</span>
+<span class="nc" id="L49">        } catch (Exception ex) {</span>
+            // Log unexpected errors securely
+<span class="nc" id="L51">            logger.error(&quot;Unexpected error during authentication&quot;, ex);</span>
+<span class="nc" id="L52">            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L53">                .body(new ErrorResponse(&quot;An unexpected error occurred&quot;));</span>
         }
     }
 
-<span class="pc bnc" id="L48" title="All 22 branches missed.">    @Data</span>
+<span class="pc bnc" id="L57" title="All 22 branches missed.">    @Data</span>
     public static class LoginRequest {
         @NotBlank
-<span class="fc" id="L51">        private String email;</span>
+<span class="fc" id="L60">        private String email;</span>
         @NotBlank
-<span class="fc" id="L53">        private String password;</span>
+<span class="fc" id="L62">        private String password;</span>
     }
 
-<span class="pc bnc" id="L56" title="All 14 branches missed.">    @Data</span>
+<span class="pc bnc" id="L65" title="All 14 branches missed.">    @Data</span>
     public static class JwtResponse {
-<span class="fc" id="L58">        private final String token;</span>
+<span class="fc" id="L67">        private final String token;</span>
+    }
+
+<span class="pc bnc" id="L70" title="All 14 branches missed.">    @Data</span>
+    public static class ErrorResponse {
+<span class="fc" id="L72">        private final String message;</span>
     }
 } 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
